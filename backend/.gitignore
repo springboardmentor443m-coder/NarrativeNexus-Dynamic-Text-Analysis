@@ -1,0 +1,30 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+*.log
+
+# Build / dist
+build/
+dist/
+*.egg-info/
+
+# Optional: ignore compiled bytecode inside subfolders
+app/__pycache__/
+routes/__pycache__/
+utils/__pycache__/

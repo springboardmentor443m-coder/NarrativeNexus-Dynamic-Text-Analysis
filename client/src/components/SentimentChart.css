@@ -1,0 +1,14 @@
+/* Fix Recharts white background issue */
+.recharts-surface {
+  background: transparent !important;
+}
+
+/* Prevent white flash when clicking bars */
+.recharts-active-bar {
+  fill-opacity: 1 !important;
+}
+
+/* Optional: make border glow slightly when active */
+.border-indigo-400 {
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+}
