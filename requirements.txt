@@ -1,0 +1,46 @@
+# FastAPI and Server
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.17
+
+# Groq LLM
+groq>=0.11.0
+
+# Environment
+python-dotenv>=1.0.1
+
+# Data Processing
+pandas>=2.2.0
+numpy>=1.26.0
+
+# File encoding detection
+chardet>=5.0.0
+
+# Document Processing
+python-docx>=1.1.0
+
+# Frontend
+streamlit>=1.39.0
+requests>=2.32.0
+
+# Visualization
+plotly>=5.24.0
+matplotlib>=3.9.0
+wordcloud>=1.9.0
+
+# NLP utilities
+nltk>=3.9.0
+
+# Advanced Transformers & Sentiment Analysis
+transformers>=4.47.1
+torch>=2.5.1
+sentencepiece>=0.2.0
+tokenizers>=0.21.0
+scipy>=1.14.0
+
+# Advanced Topic Modeling
+bertopic>=0.16.0
+scikit-learn>=1.5.0
+hdbscan>=0.8.33
+umap-learn>=0.5.6
+sentence-transformers>=3.0.0
