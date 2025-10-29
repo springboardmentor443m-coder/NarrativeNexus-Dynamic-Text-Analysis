@@ -1,0 +1,92 @@
+#import libraries
+!pip install nltk spacy gensim scikit-learn pandas numpy matplotlib wordcloud plotly transformers
+!python -m spacy download en_core_web_sm
+
+import nltk, re, spacy, pandas as pd, numpy as np
+from nltk.corpus import stopwords
+from gensim import corpora, models
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+import plotly.express as px
+from transformers import pipeline
+
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
+nlp = spacy.load("en_core_web_sm")
+-----------------------------------------------
+#upload text files
+
+from google.colab import files
+!pip install python-docx
+!pip install PyMuPDF
+import docx
+import fitz  # PyMuPDF
+
+uploaded = files.upload()
+
+filename = list(uploaded.keys())[0]
+text_data = ""
+
+if filename.endswith('.txt'):
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            text_data = f.read()
+    except UnicodeDecodeError:
+        with open(filename, 'r', encoding='latin-1') as f:
+            text_data = f.read()
+
+elif filename.endswith('.csv'):
+    df = pd.read_csv(filename)
+    text_data = ' '.join(df.astype(str).values.flatten())
+
+elif filename.endswith('.docx'):
+    doc = docx.Document(filename)
+    text_data = ' '.join([para.text for para in doc.paragraphs])
+
+elif filename.endswith('.pdf'):
+    text_pages = []
+    with fitz.open(filename) as pdf:
+        for page in pdf:
+            text_pages.append(page.get_text("text"))
+    text_data = ' '.join(text_pages)
+
+else:
+    print("Unsupported file format.")
+
+print("✅ File processed successfully!")
+print("\nSample text preview:\n")
+print(text_data[:1000])
+
+--------------------------------------------------------
+#preprocessing and tokenization 
+def preprocess(text):
+    text = re.sub(r'[^a-zA-Z]', ' ', text.lower())
+    doc = nlp(text)
+    tokens = [token.lemma_ for token in doc
+              if token.text not in stop_words and len(token.text) > 2]
+    return tokens
+
+tokens = preprocess(text_data)
+print(tokens[:50])
+------------------------------------------------------------
+#Topic Modeling(LDA)
+
+def lda_model(tokens_list):
+    dictionary = corpora.Dictionary([tokens_list])
+    corpus = [dictionary.doc2bow(tokens_list)]
+    lda = models.LdaModel(corpus, num_topics=5, id2word=dictionary, passes=10)
+    return lda.print_topics(num_words=5)
+
+topics = lda_model(tokens)
+for t in topics:
+    print(t)
+-------------------------------------------------------------
+#sentiment Analysis
+
+sentiment_pipeline = pipeline("sentiment-analysis")
+
+sentences = text_data.split('.')[:10]   
+results = sentiment_pipeline(sentences)
+
+for s, r in zip(sentences, results):
+    print(f"{s.strip()} → {r}")
