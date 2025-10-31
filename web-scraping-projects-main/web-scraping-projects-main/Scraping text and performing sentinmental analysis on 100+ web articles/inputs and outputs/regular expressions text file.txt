@@ -1,0 +1,26 @@
+'''
+text=text.lower() 
+x = re.sub(r'\s+', ' ', x)
+
+    # removing url links that are present in the text   
+    text = re.sub(r'http\S+','', text)
+    text = re.sub(r'www.\S+','', text)
+    # removing part from words end with "'s"
+    text = re.sub(r"(\w+)[’']s", r"\1",text)
+    # removing punctuations and numericals
+    text = re.sub(r'[^\w\s]|_|\d', ' ', text)
+'''
+
+#cleaning the text in text_df2
+
+# removing part from words end with "'s"
+text_df2['Text']=text_df2['Text'].apply(lambda x:re.sub(r"(\w+)[’']s", r"\1", x))
+
+# removing punctuations and numericals except hyphen(-)
+text_df2['Text']=text_df2['Text'].apply(lambda x:re.sub(r'[^\w\s-]|_|\d',' ', x))
+
+# make all letters small(lower)
+text_df2['Text']=text_df2['Text'].apply(str.lower)
+
+# removing excess whitespace
+text_df2['Text']=text_df2['Text'].apply(lambda x:' '.join(x.split()))
