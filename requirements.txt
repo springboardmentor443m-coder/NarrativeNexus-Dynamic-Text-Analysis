@@ -1,0 +1,16 @@
+# Core libraries
+streamlit
+pandas
+numpy
+nltk
+scikit-learn
+textblob
+spacy
+gensim
+wordcloud
+matplotlib
+seaborn
+plotly
+
+# NLP models for spaCy
+spacy-lookups-data

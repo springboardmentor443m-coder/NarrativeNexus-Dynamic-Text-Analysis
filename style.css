@@ -1,0 +1,127 @@
+html, body, [class*="stApp"] {
+  background: linear-gradient(180deg, #0a192f 0%, #102a43 100%) !important;
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif;
+}
+
+:root {
+  --primary: #0078d7;
+  --accent: #00b4d8;
+  --card-bg: rgba(28, 37, 65, 0.9);
+  --muted: #aab4c2;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+/* Hero */
+.hero-section {
+  text-align: center;
+  padding: 4rem 1rem 2rem 1rem;
+  background: transparent;
+}
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
+}
+.hero-section .highlight {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+.hero-section p {
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+/* Input Container */
+.input-container {
+  max-width: 800px;
+  margin: auto;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 18px;
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.2);
+  border: 1px solid rgba(0, 180, 216, 0.3);
+}
+
+/* Info Boxes */
+.info-box {
+  background: var(--card-bg);
+  border-radius: 18px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.info-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 40px rgba(0, 180, 216, 0.4);
+}
+
+/* Section Titles */
+.section-title {
+  text-align: center;
+  margin-top: 3rem;
+  font-weight: 600;
+  color: #d9e6f2;
+}
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 2rem 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: 4rem;
+}
+/* ---- Buttons Fix ---- */
+
+/* Analyze Text Button */
+.stButton > button {
+  background: linear-gradient(90deg, var(--primary), var(--accent)) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.7rem 1.5rem !important;
+  box-shadow: 0 0 15px rgba(0, 180, 216, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+.stButton > button:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.6) !important;
+}
+
+/* Browse Files Upload Button */
+[data-testid="stFileUploader"] section div div button {
+  background: #2b3a55 !important;       /* dark gray-blue */
+  color: #e0e0e0 !important;            /* light gray text */
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  font-weight: 500;
+  border-radius: 10px !important;
+  transition: all 0.2s ease-in-out;
+}
+[data-testid="stFileUploader"] section div div button:hover {
+  background: rgba(0,180,216,0.3) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(0,180,216,0.4) !important;
+}
+
+/* Text Area Border + Text Visibility */
+textarea {
+  background: rgba(20, 30, 50, 0.9) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,180,216,0.4) !important;
+  border-radius: 10px !important;
+}
