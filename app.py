@@ -1,178 +1,90 @@
+# app.py
 import streamlit as st
 import requests
+import pandas as pd
+import plotly.express as px
 
-st.set_page_config(page_title="NarrativeNexus", layout="wide")
-st.title("NarrativeNexus — Dynamic Text Analyzer")
+st.set_page_config(page_title="Narrative Nexus", layout="wide")
 
-tabs = st.tabs([
-    "📊 Topic Modeling",
-    "🧹 Clean, Summarize & Analyze",
-    "💬 HF Dataset Sentiment & Summary"
-])
+API_URL = "http://127.0.0.1:8000"
 
-with tabs[0]:
+st.title("🧠 Narrative Nexus — Semantic Topic Discovery Engine")
+st.markdown(
+    "Upload **any document or text**, and this app will automatically find meaningful topics and name them using "
+    "a transformer-based summarization model (*facebook/bart-large-cnn*)."
+)
 
-    option = st.radio(
-        "Choose Analysis Mode:",
-        ["Upload your own text", "Use Twitter Financial News Dataset (Hugging Face)"],
-    )
+# ---------------------------------------------------------------------
+# SECTION 1: Choose Input Source
+# ---------------------------------------------------------------------
+st.sidebar.header("📂 Choose Input Source")
+mode = st.sidebar.radio(
+    "Select what you want to analyze:",
+    ["Upload your own document", "Analyze Hugging Face Financial Dataset"],
+)
 
-    # ----------------------------
-    # Option 1: Manual Upload/Text
-    # ----------------------------
-    if option == "Upload your own text":
-        text_input = st.text_area("Paste your text here:", height=200)
-        file_upload = st.file_uploader("Or upload a text or DOCX file:", type=["txt", "docx"])
+# ---------------------------------------------------------------------
+# SECTION 2A: Upload and Analyze Your Own File
+# ---------------------------------------------------------------------
+if mode == "Upload your own document":
+    uploaded_file = st.file_uploader("Upload a .txt or .docx file", type=["txt", "docx"])
+    text_input = st.text_area("Or paste text manually below:", height=200)
 
-        if st.button("Analyze Text"):
-            with st.spinner("Analyzing your text..."):
-                files, data = {}, {"text": text_input}
-                if file_upload:
-                    files = {"file": (file_upload.name, file_upload.getvalue())}
+    if st.button("🔍 Analyze My Text"):
+        if not uploaded_file and not text_input.strip():
+            st.warning("Please upload a file or enter text.")
+        else:
+            with st.spinner("Analyzing your document... this may take a few seconds ⏳"):
+                files = {"file": uploaded_file.getvalue()} if uploaded_file else None
+                data = {"text": text_input} if text_input else None
+
                 try:
-                    res = requests.post("http://localhost:8000/analyze", data=data, files=files)
-                    if res.status_code == 200:
-                        result = res.json()
-                        st.success("✅ Analysis completed successfully!")
-
-                        if result.get("coherence") is not None:
-                            st.metric("Model Coherence", f"{result['coherence']:.3f}")
-
-                        st.subheader("🧩 Tokens (cleaned & lemmatized)")
-                        st.write(result["tokens"][:50])
-
-                        st.subheader("📊 Detected Topics")
-                        for t in result.get("topics", []):
-                            if isinstance(t, dict):
-                                st.write(f"**Topic {t.get('topic_id', '?')}**: {', '.join(t.get('keywords', []))}")
-                    else:
-                        st.error(f"Backend error: {res.status_code}")
+                    response = requests.post(f"{API_URL}/analyze", files=files, data=data)
+                    result = response.json()
                 except Exception as e:
                     st.error(f"Request failed: {e}")
-    # ----------------------------
-    # Option 2: Hugging Face Dataset
-    # ----------------------------
-    elif option == "Use Twitter Financial News Dataset (Hugging Face)":
-        limit = st.slider("Number of tweets to analyze", 500, 5000, 2000, 500)
-        if st.button("Run Dataset Analysis"):
-            with st.spinner("Analyzing Hugging Face dataset..."):
-                try:
-                    res = requests.get(f"http://localhost:8000/test-dataset?limit={limit}")
-                    if res.status_code == 200:
-                        result = res.json()
-                        st.success(f"✅ Analyzed {result['sample_size']} tweets")
+                    st.stop()
 
-                        if "coherence" in result:
-                            st.metric("Model Coherence", f"{result['coherence']:.3f}")
+            if "topics" in result and result["topics"]:
+                st.success("✅ Analysis Complete!")
 
-                        st.subheader("📊 Detected Topics")
-                        topics = result.get("topics", [])
-                        if isinstance(topics, list):
-                            for t in topics:
-                                if isinstance(t, dict):
-                                    st.write(f"**Topic {t.get('topic_id', '?')}**: {', '.join(t.get('keywords', []))}")
-                        else:
-                            st.error("Unexpected topic format returned by backend.")
-                    else:
-                        st.error(f"Backend error: {res.status_code}")
-                except Exception as e:
-                    st.error(f"Request failed: {e}")
-
-with tabs[1]:
-    st.header("🧹 Text Cleaner, Summarizer & Sentiment Analyzer")
-
-    uploaded_file = st.file_uploader("Upload a text or HTML file:", type=["txt", "html"])
-    manual_text = st.text_area("Or paste text manually:", height=200)
-    analyze_btn = st.button("Clean, Summarize & Analyze")
-
-    if analyze_btn:
-        with st.spinner("Analyzing..."):
-            if uploaded_file:
-                files = {"file": (uploaded_file.name, uploaded_file.getvalue())}
-                res = requests.post("http://localhost:8000/clean-and-summarize", files=files)
-            elif manual_text.strip():
-                from io import BytesIO
-                fake_file = BytesIO(manual_text.encode("utf-8"))
-                files = {"file": ("input.txt", fake_file)}
-                res = requests.post("http://localhost:8000/clean-and-summarize", files=files)
+                topics = result["topics"]
+                st.subheader("🧩 Detected Topics")
+                for tid, info in topics.items():
+                    st.markdown(f"### Topic {tid}: **{info['label']}**")
+                    st.write(", ".join(info["keywords"]))
             else:
-                st.warning("Please upload a file or enter some text.")
+                st.warning("No topics were detected. Try with a larger text.")
+
+# ---------------------------------------------------------------------
+# SECTION 2B: Analyze Hugging Face Dataset
+# ---------------------------------------------------------------------
+else:
+    limit = st.slider("Number of samples to analyze", min_value=200, max_value=2000, step=200, value=1000)
+
+    if st.button("📊 Analyze Dataset"):
+        with st.spinner("Analyzing Hugging Face dataset... please wait ⏳"):
+            try:
+                response = requests.get(f"{API_URL}/test-dataset?limit={limit}")
+                data = response.json()
+            except Exception as e:
+                st.error(f"Request failed: {e}")
                 st.stop()
 
-            if res.status_code == 200:
-                data = res.json()
-                st.subheader("🧾 Cleaned Preview")
-                st.code(data.get("preview", "—"), language="text")
+        if "error" in data:
+            st.error(data["error"])
+        else:
+            st.success("✅ Dataset Analysis Complete!")
+            st.metric("Analyzed Entries", data["sample_size"])
+            st.metric("Detected Topics", len(data["predicted_topics"]))
 
-                st.subheader("📰 Summary")
-                st.write(data.get("summary", "—"))
+            # True Label Distribution
+            labels_df = pd.DataFrame(list(data["true_labels"].items()), columns=["Label", "Count"])
+            fig = px.bar(labels_df, x="Label", y="Count", title="True Label Distribution", color="Label")
+            st.plotly_chart(fig, use_container_width=True)
 
-                sentiment = data.get("sentiment", {})
-                label = sentiment.get("label", "N/A")
-                score = sentiment.get("score", 0)
-
-                st.subheader("💬 Sentiment Analysis")
-                if label.lower() == "positive":
-                    st.success(f"Positive ({score*100:.1f}%)")
-                elif label.lower() == "negative":
-                    st.error(f"Negative ({score*100:.1f}%)")
-                else:
-                    st.warning(f"Neutral ({score*100:.1f}%)")
-            else:
-                st.error(f"Backend error: {res.status_code}")
-
-with tabs[2]:
-    st.header("💬 Hugging Face Dataset — Cleaning, Summarization & Sentiment")
-
-    # Step 1: Choose dataset size
-    limit = st.slider("Number of tweets to analyze", 50, 500, 100, 50)
-
-    # Step 2: Run backend analysis only once
-    if st.button("Run Analysis on Dataset"):
-        with st.spinner("Analyzing dataset..."):
-            res = requests.get(f"http://localhost:8000/analyze-hf-dataset?limit={limit}")
-            if res.status_code == 200:
-                data = res.json()
-                st.session_state.results = data["results"]
-                st.session_state.total = len(data["results"])
-                st.session_state.page_num = 1  # reset pagination
-                st.success(f"✅ Processed {st.session_state.total} tweets")
-            else:
-                st.error("Backend error. Could not fetch data.")
-
-    # Step 3: Only show pagination if data exists
-    if "results" in st.session_state and st.session_state.results:
-        results = st.session_state.results
-        total = st.session_state.total
-
-        # --- Pagination setup ---
-        page_size = 10
-        total_pages = (total - 1) // page_size + 1
-
-        # Ensure page_num always valid
-        if "page_num" not in st.session_state:
-            st.session_state.page_num = 1
-
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col1:
-            if st.button("⬅️ Previous", disabled=st.session_state.page_num <= 1):
-                st.session_state.page_num -= 1
-        with col3:
-            if st.button("Next ➡️", disabled=st.session_state.page_num >= total_pages):
-                st.session_state.page_num += 1
-
-        current_page = st.session_state.page_num
-        start_idx = (current_page - 1) * page_size
-        end_idx = min(start_idx + page_size, total)
-
-        st.info(f"Showing tweets {start_idx + 1}–{end_idx} of {total} (Page {current_page}/{total_pages})")
-
-        # --- Show paginated tweets ---
-        for r in results[start_idx:end_idx]:
-            st.markdown(f"**Tweet {r['index'] + 1}:** {r['original']}")
-            st.write(f"🧹 *Cleaned:* {r['cleaned_preview']}")
-            st.write(f"📰 *Summary:* {r['summary']}")
-            st.write(f"💬 *Sentiment:* {r['sentiment_label']} ({r['sentiment_score']})")
-            st.divider()
-    else:
-        st.info("👆 Choose how many tweets to analyze and click **Run Analysis on Dataset**.")
+            # Extracted Topics
+            st.subheader("🧩 Extracted Topics (Auto-Labeled)")
+            for tid, topic_info in data["predicted_topics"].items():
+                st.markdown(f"### Topic {tid}: **{topic_info['label']}**")
+                st.write(", ".join(topic_info["keywords"]))
