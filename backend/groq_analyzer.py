@@ -1,9 +1,3 @@
-"""
-MAIN ANALYZER (Simple Coordinator)
-Brings together sentiment, topics, and summarization.
-This is the main file you'll use.
-"""
-
 from groq import Groq
 import os
 from typing import List, Dict
@@ -145,4 +139,5 @@ def create_analyzer(api_key: str = None) -> GroqAnalyzer:
         api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         raise ValueError("Please provide api_key or set GROQ_API_KEY environment variable")
+
     return GroqAnalyzer(api_key)
