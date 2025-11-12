@@ -1,5 +1,3 @@
-# Helper functions for file handling and text extraction
-# Basically dealing with different file types so users can upload whatever
 
 import re
 from typing import List, Union
@@ -83,3 +81,4 @@ def remove_urls(text: str) -> str:
 def remove_emails(text: str) -> str:
     """Remove email addresses"""
     return re.sub(r'\S+@\S+', '', text)
+
