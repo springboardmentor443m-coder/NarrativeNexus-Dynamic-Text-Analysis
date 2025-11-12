@@ -1,8 +1,3 @@
-"""
-TEXT SUMMARIZER
-Creates concise summaries of text.
-Uses Groq LLM for intelligent summarization.
-"""
 
 from groq import Groq
 from typing import Dict
@@ -53,3 +48,4 @@ class TextSummarizer:
             
         except Exception as e:
             return f"Could not generate summary: {str(e)}"
+
