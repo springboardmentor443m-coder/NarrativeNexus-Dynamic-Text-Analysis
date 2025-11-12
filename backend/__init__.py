@@ -1,5 +1,3 @@
-# __init__.py for backend package
-# This file makes the backend folder a Python package
 
 from .groq_analyzer import GroqAnalyzer, create_analyzer
 from .sentiment_analyzer import SentimentAnalyzer
@@ -20,4 +18,5 @@ __all__ = [
     'HealthResponse',
     'allowed_file',
     'extract_text_from_file'
+
 ]
