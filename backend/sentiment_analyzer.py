@@ -1,9 +1,3 @@
-"""
-SENTIMENT ANALYZER - COMPACT VERSION (WITH FULL WORD LISTS)
-Analyzes whether text is positive, negative, or neutral.
-Uses RoBERTa (advanced) or Groq (fallback).
-SHORT CODE + FULL 2000+ positive & 4700+ negative words from NLTK
-"""
 
 from groq import Groq
 import json
@@ -119,4 +113,5 @@ class SentimentAnalyzer:
         
         result = self.analyze_with_groq(text)
         result["model"] = "Groq"
+
         return result
