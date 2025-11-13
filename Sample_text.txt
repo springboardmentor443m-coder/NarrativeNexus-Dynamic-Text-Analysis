@@ -1,0 +1,26 @@
+Just tried the new Meta Quest Ultra headset, and honestly, it's impressive. The immersive experience feels straight out of a sci-fi movie.  
+However, several forums, including https://techcrunch.com, have raised concerns about user tracking and constant background data collection.
+
+I went through dozens of community reviews. One person said, "Absolutely next-level graphics and responsiveness!!!"  
+But another complained, "My device crashes every hour... it's just frustrating and overpriced."  
+This kind of data is chaotic — full of random punctuation, symbols, and mixed sentiments.
+
+User Feedback
+
+"I regret buying this product. It feels rushed and buggy."
+"The display quality is unmatched. A stunning leap forward in VR tech."
+"It's powerful but complicated to set up. Needs better instructions."
+"The software updates fixed a few issues, but performance is still inconsistent."
+
+Some users mentioned long setup times, while others appreciated the quick pairing process.  
+The overall sentiment seems polarized — strong positive and negative extremes, very few neutral opinions.
+
+For analysis, words like "crashes", "buggy", and "regret" should fall under negative sentiment.  
+Meanwhile, terms such as "unmatched", "stunning", and "impressive" should be classified as positive.  
+Mentions of URLs, hashtags (#VR), or usernames (@metasupport) should be ignored during preprocessing.
+
+This dataset is a good example of raw, unstructured feedback.  
+Text normalization steps like lowercasing, punctuation cleaning, and stopword removal are crucial.  
+Additionally, lemmatization can help unify variations such as "crashes" → "crash".
+
+© 2025 DataLab Reviews. All rights reserved.
