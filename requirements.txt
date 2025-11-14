@@ -1,0 +1,9 @@
+flask
+flask-cors
+scikit-learn
+nltk
+numpy
+scipy
+pandas
+python-docx
+PyMuPDF
