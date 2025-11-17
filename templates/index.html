@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Narrative Nexus - Text Analysis Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Narrative Nexus</h1>
+            <p class="subtitle">Advanced Text Analysis with Topic Modeling, Sentiment Analysis & Summarization</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('text')">Text Input</button>
+                    <button class="tab-btn" onclick="switchTab('file')">File Upload</button>
+                </div>
+
+                <div id="text-tab" class="tab-content active">
+                    <textarea id="text-input" placeholder="Enter your text here for analysis..."></textarea>
+                    <button class="analyze-btn" onclick="analyzeText()">
+                        <span>Analyze Text</span>
+                        <div class="loader" id="loader" style="display: none;"></div>
+                    </button>
+                </div>
+
+                <div id="file-tab" class="tab-content">
+                    <div class="file-upload">
+                        <input type="file" id="file-input" accept=".txt,.pdf,.docx">
+                        <label for="file-input" class="file-label">
+                            <span>Choose File or Drag & Drop</span>
+                            <small style="display: block; margin-top: 10px; color: #666; font-size: 0.9rem;">
+                                Supported formats: TXT, PDF, DOCX
+                            </small>
+                        </label>
+                        <button class="analyze-btn" onclick="analyzeFile()">
+                            <span>Analyze File</span>
+                            <div class="loader" id="file-loader" style="display: none;"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="result-card">
+                    <h2>📊 Topics (LDA)</h2>
+                    <div id="topics-result"></div>
+                </div>
+
+                <div class="result-card">
+                    <h2>😊 Sentiment Analysis (BERT)</h2>
+                    <div id="sentiment-result"></div>
+                </div>
+
+                <div class="result-card">
+                    <h2>📝 Summary</h2>
+                    <div id="summary-result"></div>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-message" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
