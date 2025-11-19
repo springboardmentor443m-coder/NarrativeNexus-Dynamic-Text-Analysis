@@ -1,0 +1,40 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+groq
+
+# NLP
+transformers
+torch
+sentencepiece
+
+# Optional: BERTopic + embeddings
+bertopic
+sentence-transformers
+hdbscan
+umap-learn
+numba
+scikit-learn
+
+# Keyphrase extraction
+keybert
+
+# File handling
+python-docx
+pypdf
+PyPDF2
+chardet
+
+# DB
+sqlmodel
+sqlalchemy
+
+# Frontend
+streamlit
+plotly
+requests
+pandas
+
+# Optional convenience libs
+emoji
+contractions
