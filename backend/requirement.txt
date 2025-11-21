@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+transformers
+torch
+textblob
+pydantic
+nest_asyncio
+bertopic
+scikit-learn
