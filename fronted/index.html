@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dynamic Text Analysis</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Dynamic Text Analysis</h1>
+
+    <p class="help">Paste text or upload a <code>.txt</code>/<code>.csv</code>/<code>.docx</code> (text extracted client-side if possible).</p>
+
+    <textarea id="inputText" placeholder="Paste or type text here..."></textarea>
+
+    <div class="controls">
+      <input type="file" id="fileInput" accept=".txt,.csv,.docx" />
+      <select id="apiSelect">
+        <option>Local API :8000</option>
+        <option>Client-side (fallback)</option>
+      </select>
+      <button id="analyzeBtn">Analyze</button>
+    </div>
+
+    <section>
+      <h2>Summary</h2>
+      <div class="card" id="summary">—</div>
+    </section>
+
+    <section>
+      <h2>Sentiment</h2>
+      <pre class="card" id="sentiment">—</pre>
+    </section>
+
+    <section>
+      <h2>Predicted Topic</h2>
+      <div class="card" id="topic">—</div>
+    </section>
+
+    <footer class="footer">dynamic text analysis project </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
