@@ -1,0 +1,26 @@
+{
+  "summary": "Artificial intelligence (AI) is transforming industries by enabling machines to learn from data, recognize patterns, and make decisions with minimal human intervention. While AI promises efficiency and new capabilities, it also raises concerns about ethics, privacy, and job displacement.",
+  "sentiment": {
+    "compound": 0.802,
+    "label": "positive",
+    "neg": 0.0,
+    "neu": 0.814,
+    "pos": 0.186
+  },
+  "topics": [
+    {
+      "topic_id": 0,
+      "keywords": [
+        "and",
+        "ai",
+        "with",
+        "while",
+        "to",
+        "transforming",
+        "recognize",
+        "raises"
+      ],
+      "weight": 1.0000000000000004
+    }
+  ]
+}

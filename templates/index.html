@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NarrativeNexus – AI Text Analysis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <h1>NarrativeNexus</h1>
+        <p>AI-powered narrative intelligence – topics, sentiment & summaries.</p>
+      </div>
+      <span class="badge">AI Internship Project</span>
+    </header>
+
+    <main class="app-main">
+      <!-- Left: Input Panel -->
+      <section class="panel panel-input">
+        <h2>Input Text</h2>
+        <textarea id="inputText" placeholder="Paste your article, report, or content here..."></textarea>
+
+        <div class="controls-row">
+          <div class="control-group">
+            <label>Topic Model</label>
+            <select id="modelType">
+              <option value="NMF">NMF</option>
+              <option value="LDA">LDA</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label>Summary Type</label>
+            <select id="summaryMode">
+              <option value="Extractive">Extractive</option>
+              <option value="Abstractive">Abstractive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="controls-row">
+          <div class="control-group">
+            <label># Topics</label>
+            <input type="number" id="nTopics" min="3" max="10" value="5" />
+          </div>
+          <div class="control-group">
+            <label>Keywords / Topic</label>
+            <input type="number" id="nWords" min="5" max="15" value="8" />
+          </div>
+        </div>
+
+        <button id="analyzeBtn">Analyze Text</button>
+        <p id="errorMsg" class="error-msg"></p>
+      </section>
+
+      <!-- Right: Output Panels -->
+      <section class="panel panel-output">
+        <!-- Stats -->
+        <div class="card card-stats">
+          <h3>Preprocessing Stats</h3>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="label">Original chars</span>
+              <span id="statOriginalChars" class="value">–</span>
+            </div>
+            <div class="stat">
+              <span class="label">Cleaned chars</span>
+              <span id="statCleanedChars" class="value">–</span>
+            </div>
+            <div class="stat">
+              <span class="label">Words</span>
+              <span id="statOriginalWords" class="value">–</span>
+            </div>
+            <div class="stat">
+              <span class="label">Tokens</span>
+              <span id="statTokens" class="value">–</span>
+            </div>
+            <div class="stat">
+              <span class="label">Unique tokens</span>
+              <span id="statUniqueTokens" class="value">–</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sentiment -->
+        <div class="card card-sentiment">
+          <h3>Sentiment</h3>
+          <div class="sentiment-row">
+            <span id="sentimentLabel" class="sentiment-badge sentiment-neutral">N/A</span>
+            <span id="sentimentScore" class="sentiment-score">Score: –</span>
+          </div>
+        </div>
+        <div class="topic-row">
+          <span class="topic-caption">Predicted Topic</span>
+          <span id="topicName" class="topic-name">–</span>
+        </div>
+
+
+        <!-- Topics & Chart -->
+        <div class="card card-topics">
+          <div class="card-header-row">
+            <h3>Topics</h3>
+          </div>
+          <ul id="topicsList" class="topics-list"></ul>
+          <canvas id="topicsChart"></canvas>
+        </div>
+
+        <!-- Summary -->
+        <div class="card card-summary">
+          <div class="card-header-row">
+            <h3>Summary</h3>
+            <span id="summaryModeTag" class="mode-tag">–</span>
+          </div>
+          <p id="summaryText" class="summary-text">Run analysis to see the summary here.</p>
+        </div>
+
+        <!-- Word Cloud -->
+        <div class="card card-wordcloud">
+          <h3>Word Cloud</h3>
+          <img id="wordcloudImg" alt="Word Cloud" />
+        </div>
+
+        <!-- Reports -->
+        <div class="card card-reports">
+          <h3>Reports</h3>
+          <p id="reportJsonPath">JSON: –</p>
+          <p id="reportPdfPath">PDF: –</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span>Built by Sudharsan M • Infosys Springboard AI Virtual Internship</span>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

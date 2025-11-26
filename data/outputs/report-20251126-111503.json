@@ -1,0 +1,46 @@
+{
+  "summary": "NASA released new images from its Mars rover mission. Scientists say the rover discovered new soil formations that could indicate ancient water activity. The findings could help researchers understand how the planet evolved over millions of years.",
+  "sentiment": {
+    "label": "positive",
+    "compound": 0.8844429850578308
+  },
+  "topics": [
+    {
+      "topic_id": 0,
+      "keywords": [
+        "the",
+        "rover",
+        "new",
+        "could",
+        "that",
+        "soil",
+        "water",
+        "years"
+      ],
+      "weight": 1.000000000000002
+    }
+  ],
+  "topic_prediction": {
+    "topic_id": 6,
+    "topic_keywords": [
+      "space",
+      "nasa",
+      "shuttle",
+      "launch",
+      "orbit",
+      "earth",
+      "moon",
+      "data",
+      "science",
+      "mission",
+      "station",
+      "research",
+      "cost",
+      "gov",
+      "satellite"
+    ],
+    "topic_score": 0.027694085673286805
+  },
+  "model_type": "NMF",
+  "summary_mode": "Extractive"
+}
