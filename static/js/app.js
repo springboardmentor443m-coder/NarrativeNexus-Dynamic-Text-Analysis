@@ -1,6 +1,6 @@
-// -------------------------------------------
-// ANALYZE BUTTON CLICK
-// -------------------------------------------
+// -------------------------------------------------
+// ANALYZE BUTTON CLICK EVENT
+// -------------------------------------------------
 
 document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const text = document.getElementById("inputText").value.trim();
@@ -49,51 +49,56 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 });
 
 
-// -------------------------------------------
-// RENDER API RESULTS TO UI
-// -------------------------------------------
+// -------------------------------------------------
+// UTILITY: Convert object → array safely
+// -------------------------------------------------
+function toArray(obj) {
+    if (Array.isArray(obj)) return obj;               // already array
+    if (typeof obj === "string") return obj.split(","); // string → array
+    if (typeof obj === "object") return Object.values(obj); // object → array
+    return [];                                        // fallback
+}
+
+
+// -------------------------------------------------
+// RENDER API RESULTS INTO UI
+// -------------------------------------------------
 
 function renderResults(data) {
 
-    // ---- Preprocessing Stats ----
+    // ------------------- Preprocessing Stats --------------------
     document.getElementById("statOriginalChars").textContent = data.stats.original_chars;
     document.getElementById("statCleanedChars").textContent = data.stats.cleaned_chars;
     document.getElementById("statOriginalWords").textContent = data.stats.word_count;
     document.getElementById("statTokens").textContent = data.stats.token_count;
     document.getElementById("statUniqueTokens").textContent = data.stats.unique_tokens;
 
-    // ---- Sentiment ----
-    if (data.sentiment && typeof data.sentiment.label === "string") {
-        document.getElementById("sentimentLabel").textContent = data.sentiment.label;
-        document.getElementById("sentimentScore").textContent = `Score: ${(
-            data.sentiment.score || 0
-        ).toFixed(3)}`;
-    } else {
-        document.getElementById("sentimentLabel").textContent = "N/A";
-        document.getElementById("sentimentScore").textContent = "Score: –";
-    }
+    // ------------------- Sentiment --------------------
+    document.getElementById("sentimentLabel").textContent = data.sentiment.label || "Neutral";
+    document.getElementById("sentimentScore").textContent =
+        `Score: ${Number(data.sentiment.score).toFixed(3)}`;
 
-    // ---- Predicted Topic ----
+    // ------------------- Predicted Topic --------------------
     if (data.topic_prediction) {
+        const topicID = data.topic_prediction.topic_id;
+        let keywords = toArray(data.topic_prediction.topic_keywords);
         document.getElementById("topicName").textContent =
-            `T${data.topic_prediction.topic_id}: ${data.topic_prediction.topic_keywords.join(", ")}`;
-    } else {
-        document.getElementById("topicName").textContent = "–";
+            `T${topicID}: ${keywords.join(", ")}`;
     }
 
-    // ---- Topic List (NMF / LDA keywords) ----
+    // ------------------- Topic Model Output --------------------
     const topicList = document.getElementById("topicsList");
     topicList.innerHTML = "";
 
     data.topics.forEach((topic, idx) => {
-        // topic = { topic_id: number, keywords: [...] }
+        const keywords = toArray(topic);
         const li = document.createElement("li");
+        li.textContent = `T${idx}: ${keywords.join(", ")}`;
         li.className = "topic-item";
-        li.textContent = `T${topic.topic_id}: ${topic.keywords.join(", ")}`;
         topicList.appendChild(li);
     });
 
-    // ---- Topics Chart ----
+    // ------------------- Topic Bar Chart --------------------
     if (window.topicsChartRef) {
         window.topicsChartRef.destroy();
     }
@@ -102,7 +107,7 @@ function renderResults(data) {
     window.topicsChartRef = new Chart(ctx, {
         type: "bar",
         data: {
-            labels: data.topics.map((t) => `T${t.topic_id}`),
+            labels: data.topics.map((_, i) => `T${i}`),
             datasets: [{
                 label: "Topic weight",
                 data: data.topics.map(() => 1),
@@ -112,12 +117,12 @@ function renderResults(data) {
         options: { responsive: true }
     });
 
-    // ---- Summary ----
+    // ------------------- Summary --------------------
     document.getElementById("summaryText").textContent =
         data.summary || "No summary generated.";
     document.getElementById("summaryModeTag").textContent = data.summary_mode;
 
-    // ---- Word Cloud ----
+    // ------------------- Wordcloud --------------------
     const wcImg = document.getElementById("wordcloudImg");
     if (data.wordcloud) {
         wcImg.src = "data:image/png;base64," + data.wordcloud;
@@ -126,17 +131,18 @@ function renderResults(data) {
         wcImg.style.display = "none";
     }
 
-    // ---- Reports ----
+    // ------------------- Reports --------------------
     document.getElementById("reportJsonPath").innerHTML =
-        `JSON: <a href="${data.json_report_path}" target="_blank">${data.json_report_path}</a>`;
+        `JSON: <a href="/${data.json_report_path}" target="_blank">${data.json_report_path}</a>`;
+
     document.getElementById("reportPdfPath").innerHTML =
-        `PDF: <a href="${data.pdf_report_path}" target="_blank">${data.pdf_report_path}</a>`;
+        `PDF: <a href="/${data.pdf_report_path}" target="_blank">${data.pdf_report_path}</a>`;
 }
 
 
-// -------------------------------------------
-// ERROR + LOADING UI
-// -------------------------------------------
+// -------------------------------------------------
+// ERROR + LOADING UI HELPERS
+// -------------------------------------------------
 
 function showError(msg) {
     const box = document.getElementById("errorMsg");
@@ -145,7 +151,7 @@ function showError(msg) {
 
     setTimeout(() => {
         box.style.display = "none";
-    }, 4000);
+    }, 5000);
 }
 
 function loading(state) {
