@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+streamlit
+transformers
+torch
+beautifulsoup4
+requests
+scikit-learn
+numpy
+joblib
+pandas
+pdfplumber
+python-docx
+python-pptx
+
+backend: uvicorn backend.main:app --reload
+frontend: streamlit run frontend/app.py
