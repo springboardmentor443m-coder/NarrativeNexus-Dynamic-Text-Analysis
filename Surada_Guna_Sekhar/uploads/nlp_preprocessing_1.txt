@@ -1,0 +1,38 @@
+<html><body>
+<p>
+    Just got the new Apple Vision Pro, and it's 🤯! The spatial computing is mind-blowing.
+    But I've been reading a lot about data privacy issues.
+    The article at <a href="https://www.theverge.com/23971234/apple-privacy-concerns">https://www.theverge.com</a> talks about it.
+</p>
+<p>
+    Customer reviews on their site are mixed. One user wrote, "The AR features were a game-changer!!!"
+    but another said, "I have so many bugs... it's a huge waste of $$$."
+    The data looks so messy with all the exclamation marks, periods, and the dollar signs.
+</p>
+<div class="reviews-section">
+    <h2>User Feedback</h2>
+    <ul>
+        <li>&#128545; "This is the worst product I've ever owned. Total disappointment."</li>
+        <li>&#128512; "The battery life is amazing. Definitely a must-buy for tech enthusiasts."</li>
+        <li>&#128526; "It's revolutionary. A new era of computing."</li>
+    </ul>
+    <p>Some users are still confused about the setup process &amp; need better documentation.</p>
+</div>
+<script>
+    console.log("This is some JavaScript code that should be removed.");
+    var user = "customer"; // Don't process this line!
+</script>
+<p>
+    The sentiment analysis needs to be accurate. Words like "waste" and "disappointment"
+    should be classified as negative. While "revolutionary" and "mind-blowing" are positive.
+    URLs, hashtags like #tech, and usernames like @apple support are just noise.
+</p>
+<p>
+    This text is a good example of unstructured data. Proper tokenization, lowercasing,
+    and stopword removal are essential steps. We also need to normalize words like
+    "disappointment!!!" into "disappointment."
+</p>
+<p>
+    © 2025 Tech Insights. All rights reserved.
+</p>
+</body></html>

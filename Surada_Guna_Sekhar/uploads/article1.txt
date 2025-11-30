@@ -1,0 +1,41 @@
+<html><head><title>Scientific Exploration & Space</title></head>
+<body>
+<div class="content">
+<p>Recent advances in scientific research have led to groundbreaking discoveries that are reshaping our understanding of the world and beyond. Scientists are now able to analyze vast amounts of data collected from remote locations, revealing new insights into complex systems and phenomena. These efforts have opened up new possibilities for exploration and innovation.</p>
+
+<p>For example, missions to distant planets have provided valuable information about their geology and potential for supporting life. Researchers use advanced telescopes and satellites to study the universe, capturing detailed images of galaxies, stars, and cosmic events. The James Webb Space Telescope has played a key role in these discoveries, offering unprecedented views of the early universe and distant exoplanets.</p>
+
+<section>
+<h2>Messy scraped elements</h2>
+<ul>
+<li>Random HTML like &lt;div id="ad-banner"&gt;Buy now!&lt;/div&gt; inside paragraphs.</li>
+<li>Inconsistent line breaks, e.g. “Scientists are now able to”
+followed by “analyzehuge datasets collectedover time”.</li>
+<li>Encoding artifacts such as “Â©”, “â€””, and non‑breaking spaces (&nbsp;).</li>
+<li>Broken punctuation... sentences without proper endings and duplicated lines.</li>
+</ul>
+</section>
+
+<p>Collaborative projects between space agencies have led to ambitious plans for human missions to Mars and the establishment of lunar bases. These endeavors require sophisticated engineering, robotics, and life support systems. Citizen science initiatives also contribute to astronomical research, with volunteers helping to classify galaxies and identify new celestial objects.</p>
+
+<p>Despite the challenges of radiation exposure and long‑duration space travel, technological advances and international cooperation are making these missions increasingly feasible. The future holds exciting possibilities, from discovering habitable exoplanets to unraveling the mysteries of black holes. As exploration continues, our knowledge of the cosmos expands, inspiring new generations of scientists and engineers.</p>
+
+<p>However, when this text is scraped from the web, it may appear as: “Recent advançes in scientîfic researçh have led to groundbréaking discovêries...” with stray symbols like “@@@” and “###” mixed in. Sometimes there are repeated fragments such as: “The James Webb Space Telescope has played a key role, The James Webb Space Telescope has played a key role,” on consecutive lines.</p>
+
+<pre>
+&lt;script&gt;
+  console.log("trackingCodeInit()");
+  var pageTitle = "Space Exploration Â— Demo";
+&lt;/script&gt;
+</pre>
+
+<p>Other noise examples:
+“Thîs têxt cøntâins rändom çharacters ând mîssîng punctuatiôn.. . it also repeats repeats lines unexpectedly.”
+“Space explorati!on is a key are@ in scienti#fic discovêry wher# data is uséd to iden!ify new phenomenå.”
+“Sometimes the data &lt;div class='broken'&gt;looks like HTML but isn’t closed properly &lt;/div and ends abruptly”
+“Resea®rchers mußt de-termine whet#er these artifacts are intrinsic or extrinsic to the astronømical dataset.”</p>
+
+<footer>End of noisy scraped sample — Space Exploration Report Â© 2025.</footer>
+</div>
+</body>
+</html>
