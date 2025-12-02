@@ -10,6 +10,7 @@ import os
 from fastapi import HTTPException
 import csv
 
+
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
