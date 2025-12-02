@@ -1,1 +1,0 @@
-Once you run the backend server the analysis_history.db will be created.
