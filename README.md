@@ -70,53 +70,34 @@ Positioned as a comprehensive solution, this dynamic text analysis platform leve
 ---
 
 ## 4. Conclusion
-This roadmap outlines the steps necessary to develop a **dynamic text analysis platform** that provides valuable insights by extracting themes and summarizing text data.  
+This Methodology outlines the steps necessary to develop a **dynamic text analysis platform** that provides valuable insights by extracting themes and summarizing text data.  
 
 By leveraging advanced algorithms and user-friendly design, this platform aims to serve a wide range of users, enhancing their ability to make informed decisions based on textual information.
 
 ---
 
-## Project Setup (Branch: Surada_Guna_Sekhar)
+## 5. Project Setup (Branch: Surada_Guna_Sekhar)
 
-1. Clone the repository and switch to your branch
-   
-git clone https://github.com/springboardmentor443m-coder/NarrativeNexus-Dynamic-Text-Analysis.git
-cd NarrativeNexus-Dynamic-Text-Analysis
-git checkout Surada_Guna_Sekhar
+1. Clone the repository and switch to your branch  
+    git clone https://github.com/springboardmentor443m-coder/NarrativeNexus-Dynamic-Text-Analysis.git  
+    cd NarrativeNexus-Dynamic-Text-Analysis  
+    git checkout Surada_Guna_Sekhar  
 
----
+2. Create and activate virtual environment  
+    python -m venv venv  
 
-2. Create and activate virtual environment
+    **Windows**  
+    venv\Scripts\activate  
 
-python -m venv venv
+    **macOS / Linux**  
+    source venv/bin/activate  
 
-Windows
-venv\Scripts\activate
+3. Install dependencies  
+    pip install -r requirements.txt  
 
-macOS / Linux
-source venv/bin/activate
+4. Run the backend (FastAPI using main.py)  
+    uvicorn main:app --reload  
 
----
-
-3. Install dependencies
-
-pip install -r requirements.txt
-
----
-
-4. Run the backend (FastAPI using main.py)
-
-uvicorn main:app --reload
-
----
-
-5. Run the frontend (Streamlit using ui.py)
-
-streamlit run ui.py
-
-
-
-
-
-
+5. Run the frontend (Streamlit using ui.py)  
+    streamlit run ui.py
 
