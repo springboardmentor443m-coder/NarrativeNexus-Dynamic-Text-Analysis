@@ -78,26 +78,47 @@ By leveraging advanced algorithms and user-friendly design, this platform aims t
 
 ## 5. Project Setup (Branch: Surada_Guna_Sekhar)
 
-1. Clone the repository and switch to your branch  
+1. Clone the repository and switch to your branch
+   
+   ```bash  
     git clone https://github.com/springboardmentor443m-coder/NarrativeNexus-Dynamic-Text-Analysis.git  
     cd NarrativeNexus-Dynamic-Text-Analysis  
-    git checkout Surada_Guna_Sekhar  
+    git checkout Surada_Guna_Sekhar
+   ```
 
-2. Create and activate virtual environment  
-    python -m venv venv  
+2. Create and activate virtual environment
+   
+   ```bash
+    python -m venv venv
+   ``` 
 
-    **Windows**  
-    venv\Scripts\activate  
+    **Windows**
 
-    **macOS / Linux**  
-    source venv/bin/activate  
+   ```bash
+    venv\Scripts\activate
+   ```  
 
-3. Install dependencies  
-    pip install -r requirements.txt  
+    **macOS / Linux**
+   
+   ```bash  
+    source venv/bin/activate
+   ```  
 
-4. Run the backend (FastAPI using main.py)  
-    uvicorn main:app --reload  
+3. Install dependencies
 
-5. Run the frontend (Streamlit using ui.py)  
+   ```bash
+    pip install -r requirements.txt
+   ```  
+
+4. Run the backend (FastAPI using main.py)
+   
+   ```bash
+    uvicorn main:app --reload
+   ``` 
+
+5. Run the frontend (Streamlit using ui.py)
+    
+   ```bash 
     streamlit run ui.py
+   ```
 
