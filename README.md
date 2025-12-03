@@ -58,7 +58,7 @@ Positioned as a comprehensive solution, this dynamic text analysis platform leve
   - Bar charts showing sentiment distribution.  
   - Topic distribution graphs to illustrate the prevalence of themes.  
 - **Reporting Module:** Generate comprehensive reports summarizing the findings, including actionable insights and recommendations based on the analysis.
-  
+
 ---
 
 ## 3. Expected Deliverables
@@ -66,7 +66,7 @@ Positioned as a comprehensive solution, this dynamic text analysis platform leve
 - Trained topic modeling and sentiment analysis models.  
 - Interactive dashboards and visualizations of analysis results.  
 - Comprehensive documentation detailing the methodology, implementation, and findings.
-  
+
 ---
 
 ## 4. Conclusion
