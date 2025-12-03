@@ -80,45 +80,41 @@ By leveraging advanced algorithms and user-friendly design, this platform aims t
 
 1. Clone the repository and switch to your branch
    
-   ```bash  
-    git clone https://github.com/springboardmentor443m-coder/NarrativeNexus-Dynamic-Text-Analysis.git  
-    cd NarrativeNexus-Dynamic-Text-Analysis  
-    git checkout Surada_Guna_Sekhar
-   ```
+```bash
+git clone https://github.com/springboardmentor443m-coder/NarrativeNexus-Dynamic-Text-Analysis.git
+cd NarrativeNexus-Dynamic-Text-Analysis
+git checkout Surada_Guna_Sekhar
+Create and activate virtual environment
 
-2. Create and activate virtual environment
-   
-   ```bash
-    python -m venv venv
-   ``` 
+bash
+Copy code
+python -m venv venv
+Windows
 
-    **Windows**
+bash
+Copy code
+venv\Scripts\activate
+macOS / Linux
 
-   ```bash
-    venv\Scripts\activate
-   ```  
+bash
+Copy code
+source venv/bin/activate
+Install dependencies
 
-    **macOS / Linux**
-   
-   ```bash  
-    source venv/bin/activate
-   ```  
+bash
+Copy code
+pip install -r requirements.txt
+Run the backend (FastAPI using main.py)
 
-3. Install dependencies
+bash
+Copy code
+uvicorn main:app --reload
+Run the frontend (Streamlit using ui.py)
 
-   ```bash
-    pip install -r requirements.txt
-   ```  
+bash
+Copy code
+streamlit run ui.py
+yaml
+Copy code
 
-4. Run the backend (FastAPI using main.py)
-   
-   ```bash
-    uvicorn main:app --reload
-   ``` 
-
-5. Run the frontend (Streamlit using ui.py)
-    
-   ```bash 
-    streamlit run ui.py
-   ```
-
+---
