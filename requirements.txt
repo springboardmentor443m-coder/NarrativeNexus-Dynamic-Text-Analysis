@@ -13,5 +13,5 @@ pdfplumber
 python-docx
 python-pptx
 
-backend: uvicorn backend.main:app --reload
-frontend: streamlit run frontend/app.py
+backend: uvicorn backend_1.main:app --reload
+frontend: streamlit run frontend_1/app.py

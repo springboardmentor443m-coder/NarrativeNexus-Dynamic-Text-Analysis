@@ -6,16 +6,17 @@ import tempfile
 import shutil
 import os
 
-from backend.text_processing import (
+from backend_1.text_processing import (
     clean_text,
     summarize_text,
     analyze_sentiment,
     extract_text_from_file,
 )
-from backend.topic_model import infer_topic
+from backend_1.topic_model import infer_topic, get_topic_count
+from backend_1.topic_model import TOPIC_NAMES
 
 # Load the keywords dictionary
-with open("backend/models/topic_keywords.pkl", "rb") as f:
+with open("backend_1/models/topic_keywords.pkl", "rb") as f:
     topic_keywords = pickle.load(f)
 
 # Request MODEL for /api/topic
@@ -37,6 +38,10 @@ app.add_middleware(
 def home():
     return {"message": "AI Narrative Nexus backend is running 🚀"}
 
+@app.get("/api/topics")
+def list_topics():
+    # return dictionary of {id : name}
+    return {"topics": TOPIC_NAMES}
 
 @app.post("/api/process")
 async def process_text(file: UploadFile = File(...)):
@@ -58,6 +63,7 @@ async def process_text(file: UploadFile = File(...)):
         sentiment = analyze_sentiment(summary)
 
         topic_out = infer_topic(cleaned_text)
+        topic_count = get_topic_count()
 
         os.remove(temp_path)
 
@@ -66,10 +72,11 @@ async def process_text(file: UploadFile = File(...)):
             "cleaned_preview": cleaned_text[:400] + "...",
             "summary": summary,
             "sentiment": sentiment,
-            "topic": topic_out["id"],
+            "topic_id": topic_out["id"],
             "topic_name": topic_out["name"],
             "topic_keywords": topic_out["keywords"],
-            "topic_probability": topic_out["probability"]
+            "topic_probability": topic_out["probability"],
+            "topic_count": topic_count
         }
 
     except HTTPException:

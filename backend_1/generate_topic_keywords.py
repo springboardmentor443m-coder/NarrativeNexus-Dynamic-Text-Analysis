@@ -3,10 +3,10 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
-with open("backend/models/topic_model/documents.pkl", "rb") as f:
+with open("backend_1/models/topic_model/documents.pkl", "rb") as f:
     documents = pickle.load(f)
 
-labels = np.load("backend/models/topic_model/topic_labels.npy")
+labels = np.load("backend_1/models/topic_model/topic_labels.npy")
 
 print("Documents loaded:", len(documents))
 print("Unique topics:", len(set(labels)))
@@ -51,11 +51,11 @@ for topic_id, row in zip(topic_docs.index, ctfidf_matrix):
 # --------------------------------------------------------------------
 # 5. Save keywords
 # --------------------------------------------------------------------
-with open("backend/models/topic_model/topic_keywords.pkl", "wb") as f:
+with open("backend_1/models/topic_model/topic_keywords.pkl", "wb") as f:
     pickle.dump(topic_keywords, f)
 
 print("\n🎉 Keyword extraction complete!")
-print("Saved to backend/models/topic_model/topic_keywords.pkl\n")
+print("Saved to backend_1/models/topic_model/topic_keywords.pkl\n")
 
 # Show sample
 print("Example:")

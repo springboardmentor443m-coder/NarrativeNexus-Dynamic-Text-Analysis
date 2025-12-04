@@ -1,12 +1,10 @@
-import numpy as np
+from backend_1.topic_model import topic_model
 
-# Load labels assigned by HDBSCAN during training
-labels = np.load("backend/models/topic_model/topic_labels.npy")
+# Get topic info as a dataframe
+info = topic_model.get_topic_info()
 
-# Unique topic IDs (excluding noise label -1)
-unique_topics = set(labels)
-if -1 in unique_topics:
-    unique_topics.remove(-1)  # -1 means "noise" or "unclustered"
+# Exclude the "-1" noise topic
+valid_topics = info[info["Topic"] != -1]
 
-print("Number of topics discovered:", len(unique_topics))
-print("Topic IDs:", sorted(unique_topics))
+print("Number of topics discovered:", len(valid_topics))
+print(valid_topics.head())

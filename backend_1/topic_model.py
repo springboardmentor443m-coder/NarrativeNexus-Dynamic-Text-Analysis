@@ -1,24 +1,12 @@
-# backend/topic_model.py
+# backend_1/topic_model.py
 
 import os
 import pickle
 from bertopic import BERTopic
 
-
-# -------------------------------------------------------
-# 1. Paths
-# -------------------------------------------------------
-
-# Base path WITHOUT extension
-MODEL_BASE = os.path.join("backend", "models", "topic_model")
-
-# The actual saved model file (BERTopic format)
+# Model paths
+MODEL_BASE = os.path.join("backend_1", "models", "topic_model")
 MODEL_FILE = MODEL_BASE + ".bertopic"
-
-
-# -------------------------------------------------------
-# 2. Load BERTopic model
-# -------------------------------------------------------
 
 print(f"🔄 Loading BERTopic model from: {MODEL_FILE}")
 
@@ -26,34 +14,41 @@ topic_model = BERTopic.load(MODEL_FILE)
 
 
 # -------------------------------------------------------
-# 3. Load metadata (keywords, names)
+# LOAD METADATA
 # -------------------------------------------------------
 
-# Load keywords
-try:
-    with open(os.path.join("backend", "models", "topic_keywords.pkl"), "rb") as f:
-        TOPIC_KEYWORDS = pickle.load(f)
-except Exception:
-    TOPIC_KEYWORDS = {}
+def _safe_load(path, default):
+    try:
+        with open(path, "rb") as f:
+            return pickle.load(f)
+    except:
+        return default
 
-# Load names
-try:
-    with open(os.path.join("backend", "models", "topic_names.pkl"), "rb") as f:
-        TOPIC_NAMES = pickle.load(f)
-except Exception:
-    TOPIC_NAMES = {}
+TOPIC_KEYWORDS = _safe_load(
+    os.path.join("backend_1", "models", "topic_keywords.pkl"),
+    {}
+)
 
+TOPIC_NAMES = _safe_load(
+    os.path.join("backend_1", "models", "topic_names.pkl"),
+    {}
+)
 
 
 # -------------------------------------------------------
-# 4. Infer topic
+# TOPIC COUNT
+# -------------------------------------------------------
+
+def get_topic_count():
+    info = topic_model.get_topic_info()
+    return int(info[info["Topic"] != -1].shape[0])
+
+
+# -------------------------------------------------------
+# TOPIC INFERENCE
 # -------------------------------------------------------
 
 def infer_topic(text: str):
-    """
-    Infer topic from text using BERTopic.
-    Returns: { id, name, keywords, probability }
-    """
     if not text or not text.strip():
         return {
             "id": -1,
@@ -62,31 +57,17 @@ def infer_topic(text: str):
             "probability": 0.0,
         }
 
-    # BERTopic transform
     topics, probs = topic_model.transform([text])
 
-    topic_id = int(topics[0]) if topics[0] is not None else -1
+    topic_id = int(topics[0]) if topics else -1
     probability = float(probs[0]) if probs is not None else 0.0
 
-    # Get human-friendly name
-    topic_name = TOPIC_NAMES.get(topic_id, None)
-
-    if topic_name is None:
-        # fallback: derive from BERTopic directly
-        rep = topic_model.get_topic(topic_id) or []
-        words = [w for w, _ in rep]
-        topic_name = " / ".join(words[:3]).title() if words else "Unknown Topic"
-
-    # Keywords
-    topic_keywords = TOPIC_KEYWORDS.get(topic_id, None)
-
-    if topic_keywords is None:
-        rep = topic_model.get_topic(topic_id) or []
-        topic_keywords = [w for w, _ in rep]
+    name = TOPIC_NAMES.get(topic_id, "Unknown Topic")
+    keywords = TOPIC_KEYWORDS.get(topic_id, [])
 
     return {
         "id": topic_id,
-        "name": topic_name,
-        "keywords": topic_keywords,
+        "name": name,
+        "keywords": keywords,
         "probability": probability,
     }

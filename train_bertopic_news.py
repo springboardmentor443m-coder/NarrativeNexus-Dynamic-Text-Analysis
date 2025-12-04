@@ -7,27 +7,27 @@ from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 from bertopic import BERTopic
 import numpy as np
-import pandas as pd
 
 
-# ----------------------------------------------
-#  CONFIG
-# ----------------------------------------------
+# -----------------------------------------------------------
+# CONFIG
+# -----------------------------------------------------------
 
-# Optional: include your uploaded file in training
 LOCAL_FILE = "/mnt/data/nlp_preprocessing_2.txt"
 
-# Save model as a single .bertopic file — FIXED
-MODEL_BASE = "backend/models/topic_model"      # no trailing slash
-MODEL_FILE = MODEL_BASE + ".bertopic"          # final file = backend/models/topic_model.bertopic
+MODEL_DIR = "backend_1/models"
+os.makedirs(MODEL_DIR, exist_ok=True)
 
-# Ensure parent directory exists
-os.makedirs("backend/models", exist_ok=True)
+MODEL_BASE = os.path.join(MODEL_DIR, "topic_model")
+MODEL_FILE = MODEL_BASE + ".bertopic"
+
+DESIRED_TOPICS = 40     # <-- Final number of topics after reduction
+TRAIN_DOCS = 10000      # <-- Train on 10k documents
 
 
-# ----------------------------------------------
-#  CLEANING FUNCTION
-# ----------------------------------------------
+# -----------------------------------------------------------
+# TEXT CLEANING
+# -----------------------------------------------------------
 
 def clean_text(s: str) -> str:
     if not isinstance(s, str):
@@ -37,61 +37,58 @@ def clean_text(s: str) -> str:
     return s.strip()
 
 
-# ----------------------------------------------
-#  1) LOAD AG NEWS
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 1) LOAD & PREPARE AG NEWS (10K samples)
+# -----------------------------------------------------------
 
 print("📥 Loading AG News dataset...")
 ds = load_dataset("ag_news")
+
 documents = [clean_text(item["text"]) for item in ds["train"]]
+documents = documents[:TRAIN_DOCS]      # <-- LIMIT TO 10K SAMPLES
 
-print("Loaded AG News train size:", len(documents))
+print(f"Loaded {len(documents)} training documents.")
 
 
-# ----------------------------------------------
-#  2) OPTIONAL — Add your own uploaded file
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 2) OPTIONAL — Add your own uploaded text
+# -----------------------------------------------------------
 
 if os.path.exists(LOCAL_FILE):
-    print(f"📄 Found local file: {LOCAL_FILE} — appending to training data.")
-    try:
-        with open(LOCAL_FILE, "r", encoding="utf-8", errors="ignore") as f:
-            content = f.read()
+    print(f"📄 Adding local file: {LOCAL_FILE}")
+    with open(LOCAL_FILE, "r", encoding="utf-8", errors="ignore") as f:
+        content = f.read()
 
-        # break into paragraphs
-        extra_docs = [p.strip() for p in content.split("\n\n") if len(p.strip()) > 40]
-        if not extra_docs:
-            if len(content.strip()) > 40:
-                extra_docs = [content.strip()]
+    extra_docs = [p.strip() for p in content.split("\n\n") if len(p.strip()) > 40]
+    if not extra_docs:
+        if len(content.strip()) > 40:
+            extra_docs = [content.strip()]
 
-        documents.extend([clean_text(d) for d in extra_docs])
-        print("After adding local documents:", len(documents))
-
-    except Exception as e:
-        print("⚠️ Could not load local file. Error:", e)
+    documents.extend([clean_text(d) for d in extra_docs])
+    print("Final document count:", len(documents))
 
 
-# ----------------------------------------------
-#  3) FILTER SHORT DOCS (needed for BERTopic)
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 3) FILTER SHORT TEXTS
+# -----------------------------------------------------------
 
 documents = [d for d in documents if len(d) > 40]
 print("Documents after filtering:", len(documents))
 
 
-# ----------------------------------------------
-#  4) EMBEDDING MODEL (MiniLM)
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 4) LOAD EMBEDDING MODEL
+# -----------------------------------------------------------
 
-print("🔍 Loading embedding model (all-MiniLM-L6-v2)...")
+print("🔍 Loading MiniLM embeddings...")
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-# ----------------------------------------------
-#  5) TRAIN BERTopic
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 5) TRAIN BERTopic
+# -----------------------------------------------------------
 
-print("🚀 Training BERTopic (this will take time)...")
+print("🚀 Training BERTopic model...")
 topic_model = BERTopic(
     embedding_model=embedder,
     nr_topics="auto",
@@ -101,55 +98,68 @@ topic_model = BERTopic(
 topics, probs = topic_model.fit_transform(documents)
 
 
-# ----------------------------------------------
-#  6) SAVE BERTopic MODEL (FIXED)
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 6) REDUCE TOPICS TO DESIRED NUMBER
+# -----------------------------------------------------------
+
+print(f"🔧 Reducing topics to {DESIRED_TOPICS}...")
+
+topic_model = topic_model.reduce_topics(
+    docs=documents,
+    nr_topics=DESIRED_TOPICS
+)
+
+# Updated topic assignments after reduction
+topics = topic_model.topics_
+
+print(f"✅ Final number of topics: {DESIRED_TOPICS}")
+
+
+# -----------------------------------------------------------
+# 7) SAVE FINAL MODEL (.bertopic)
+# -----------------------------------------------------------
 
 print("💾 Saving BERTopic model to:", MODEL_FILE)
-topic_model.save(MODEL_FILE)      # <-- now saving as a single file (.bertopic)
+topic_model.save(MODEL_FILE)
 
 
-# ----------------------------------------------
-#  7) SAVE METADATA SEPARATELY
-# ----------------------------------------------
+# -----------------------------------------------------------
+# 8) SAVE METADATA FOR BACKEND
+# -----------------------------------------------------------
 
-# For compatibility with your backend
-os.makedirs(MODEL_BASE.replace("topic_model", ""), exist_ok=True)
-os.makedirs("backend/models", exist_ok=True)
-
-# Save processed documents
-with open("backend/models/documents.pkl", "wb") as f:
+# Save documents
+with open(os.path.join(MODEL_DIR, "documents.pkl"), "wb") as f:
     pickle.dump(documents, f)
 
-np.save("backend/models/topic_labels.npy", np.array(topics))
+# Save topic IDs
+np.save(os.path.join(MODEL_DIR, "topic_labels.npy"), np.array(topics))
 
-# Extract keywords for each topic
+# Extract topic keywords
 topic_keywords = {}
 for tid in topic_model.get_topic_info()["Topic"].tolist():
     if tid == -1:
         continue
-    words = topic_model.get_topic(int(tid))      # list of (word, score)
+    words = topic_model.get_topic(int(tid))
     topic_keywords[int(tid)] = [w for w, _ in words]
 
-with open("backend/models/topic_keywords.pkl", "wb") as f:
+with open(os.path.join(MODEL_DIR, "topic_keywords.pkl"), "wb") as f:
     pickle.dump(topic_keywords, f)
 
-# Generate human-readable names
+# Generate topic names
 topic_names = {
     tid: " / ".join(topic_keywords[tid][:3]).title() if topic_keywords.get(tid) else "Unknown Topic"
     for tid in topic_keywords.keys()
 }
 
-with open("backend/models/topic_names.pkl", "wb") as f:
+with open(os.path.join(MODEL_DIR, "topic_names.pkl"), "wb") as f:
     pickle.dump(topic_names, f)
 
 
-# ----------------------------------------------
-#  DONE
-# ----------------------------------------------
+# -----------------------------------------------------------
+# DONE
+# -----------------------------------------------------------
 
-print("✅ BERTopic model saved.")
-print("📌 Model file:", MODEL_FILE)
+print("🎉 Training Complete!")
+print("📌 Model saved at:", MODEL_FILE)
 print("📌 Topics discovered:", len(topic_keywords))
-print("🎉 Training complete!")
 
