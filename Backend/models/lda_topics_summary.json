@@ -1,0 +1,17 @@
+{
+  "n_topics": 10,
+  "topics": [
+    "written / discussions / biblical / claims / represents / like / impossible / secular / based / non",
+    "written / discussions / biblical / claims / represents / like / impossible / secular / based / non",
+    "written / discussions / biblical / claims / represents / like / impossible / secular / based / non",
+    "religious / state / belief / matters / constitutional / church / church state / non / secular / organizations",
+    "written / discussions / biblical / claims / represents / like / impossible / secular / based / non",
+    "atheism / atheists / god / religion / belief / faith / religious / does / exists / beliefs",
+    "evidence / similar / understanding / knowledge / content / different / appear / generally / know / discussions",
+    "written / discussions / biblical / claims / represents / like / impossible / secular / based / non",
+    "written / discussions / biblical / claims / represents / like / impossible / secular / based / non",
+    "philosophical / atheist / arguments / history / freedom / non / claims / newsletter / lack / include"
+  ],
+  "training_documents": 4,
+  "max_features": 5000
+}

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>AI Narrative Nexus</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div class="page">
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>AI Narrative Nexus</h1>
+            <p>Turn raw text into a story-like narrative with topics, sentiment, and a concise summary.</p>
+        </div>
+        <div class="header-tabs">
+            <button class="tab-btn active" data-tab="analyze">Analyze</button>
+            <button class="tab-btn" data-tab="library">Library</button>
+            <button class="tab-btn" data-tab="stats">Statistics</button>
+        </div>
+    </header>
+
+    <main class="main" id="analyzeTab">
+        <section class="input-panel">
+            <h2>Craft Your Narrative</h2>
+            <label for="title">Narrative Title</label>
+            <input id="title" type="text" placeholder="e.g., Exploring Healthcare with AI" />
+
+            <label for="content">Paste Your Text</label>
+            <textarea id="content" rows="10"
+                      placeholder="Paste an article, document, or any text you want to analyze..."></textarea>
+
+            <button id="analyzeBtn">Generate Narrative</button>
+            <p class="hint">Your text is processed securely on this FastAPI backend demo.</p>
+        </section>
+
+        <section class="output-panel">
+            <h2>AI-Generated Narrative</h2>
+            <div id="loading" class="loading hidden">Analyzing your narrative...</div>
+            <div id="error" class="error hidden"></div>
+
+            <div id="results" class="results hidden">
+                <div class="stats-card">
+                    <h3>Quick Stats</h3>
+                    <ul>
+                        <li><strong>Title:</strong> <span id="resTitle"></span></li>
+                        <li><strong>Words:</strong> <span id="resWords"></span></li>
+                        <li><strong>Characters:</strong> <span id="resChars"></span></li>
+                        <li><strong>Estimated Read Time:</strong>
+                            <span id="resReadTime"></span> min</li>
+                        <li><strong>Sentiment:</strong> <span id="resSentiment"></span></li>
+                    </ul>
+                </div>
+
+                <div class="topics-card">
+                    <h3>Key Themes</h3>
+                    <div id="resTopics" class="chip-container"></div>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Summaries</h3>
+                    <div class="summary-sections">
+                        <div class="summary-subsection">
+                            <h4>Extractive Summary</h4>
+                            <p id="resSummaryExtractive"></p>
+                        </div>
+                        <div class="summary-subsection">
+                            <h4>Abstractive Summary</h4>
+                            <p id="resSummaryAbstractive"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="narrative-card">
+                    <h3>Narrative View</h3>
+                    <p id="resNarrative"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <main class="main hidden" id="libraryTab">
+        <section class="library-panel">
+            <h2>Saved Narratives Library</h2>
+            <div class="search-bar">
+                <input id="searchInput" type="text" placeholder="Search saved narratives..." />
+                <button id="searchBtn">Search</button>
+                <select id="sentimentFilter">
+                    <option value="">All Sentiments</option>
+                    <option value="positive">Positive</option>
+                    <option value="neutral">Neutral</option>
+                    <option value="negative">Negative</option>
+                </select>
+            </div>
+            <div id="libraryLoading" class="loading hidden">Loading narratives...</div>
+            <div id="narrativeList" class="narrative-list"></div>
+        </section>
+    </main>
+
+    <main class="main hidden" id="statsTab">
+        <section class="stats-panel">
+            <h2>Statistics</h2>
+            <div id="statsLoading" class="loading hidden">Loading statistics...</div>
+            <div id="statsError" class="error hidden"></div>
+            <div id="statsContainer" class="stats-grid">
+                <div class="stat-card">
+                    <h3>Sentiment Distribution</h3>
+                    <div id="sentimentStats"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Analyses</h3>
+                    <p id="totalCount">0</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>AI Narrative Nexus • FastAPI-powered narrative website demo with Database Support</p>
+    </footer>
+</div>
+
+<script>
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const loadingEl = document.getElementById("loading");
+    const errorEl = document.getElementById("error");
+    const resultsEl = document.getElementById("results");
+
+    const resTitle = document.getElementById("resTitle");
+    const resWords = document.getElementById("resWords");
+    const resChars = document.getElementById("resChars");
+    const resReadTime = document.getElementById("resReadTime");
+    const resSentiment = document.getElementById("resSentiment");
+    const resTopics = document.getElementById("resTopics");
+    const resSummaryExtractive = document.getElementById("resSummaryExtractive");
+    const resSummaryAbstractive = document.getElementById("resSummaryAbstractive");
+    const resNarrative = document.getElementById("resNarrative");
+
+    analyzeBtn.addEventListener("click", async () => {
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+
+        if (!content || !content.trim()) {
+            errorEl.textContent = "Please enter some text to analyze.";
+            errorEl.classList.remove("hidden");
+            return;
+        }
+
+        errorEl.classList.add("hidden");
+        resultsEl.classList.add("hidden");
+        loadingEl.classList.remove("hidden");
+        loadingEl.textContent = "Analyzing your narrative...";
+
+        try {
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            loadingEl.classList.add("hidden");
+
+            if (data.error) {
+                errorEl.textContent = data.error;
+                errorEl.classList.remove("hidden");
+                return;
+            }
+
+            if (!data.title) {
+                throw new Error("Invalid response from server");
+            }
+
+            resTitle.textContent = data.title;
+            resWords.textContent = data.word_count;
+            resChars.textContent = data.char_count;
+            resReadTime.textContent = data.reading_time_minutes;
+            resSentiment.textContent = data.sentiment;
+
+            resTopics.innerHTML = "";
+            if (data.topics && data.topics.length > 0) {
+                data.topics.forEach(topic => {
+                    const chip = document.createElement("span");
+                    chip.className = "chip";
+                    chip.textContent = topic;
+                    resTopics.appendChild(chip);
+                });
+            } else {
+                const chip = document.createElement("span");
+                chip.className = "chip";
+                chip.textContent = "No dominant themes found";
+                resTopics.appendChild(chip);
+            }
+
+            resSummaryExtractive.textContent = data.summary_extractive;
+            resSummaryAbstractive.textContent = data.summary_abstractive;
+            resNarrative.textContent = data.narrative;
+
+            resultsEl.classList.remove("hidden");
+        } catch (err) {
+            loadingEl.classList.add("hidden");
+            errorEl.textContent = "Error: " + (err.message || "Something went wrong while analyzing the text.");
+            errorEl.classList.remove("hidden");
+            console.error(err);
+        }
+    });
+
+    // Tab switching
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    tabBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const tabName = btn.dataset.tab;
+            
+            tabBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            
+            document.getElementById("analyzeTab").classList.add("hidden");
+            document.getElementById("libraryTab").classList.add("hidden");
+            document.getElementById("statsTab").classList.add("hidden");
+            
+            if (tabName === "analyze") {
+                document.getElementById("analyzeTab").classList.remove("hidden");
+            } else if (tabName === "library") {
+                document.getElementById("libraryTab").classList.remove("hidden");
+                loadSavedNarratives();
+            } else if (tabName === "stats") {
+                document.getElementById("statsTab").classList.remove("hidden");
+                loadStatistics();
+            }
+        });
+    });
+
+    // Load saved narratives
+    async function loadSavedNarratives() {
+        const libraryLoading = document.getElementById("libraryLoading");
+        const narrativeList = document.getElementById("narrativeList");
+        
+        libraryLoading.classList.remove("hidden");
+        narrativeList.innerHTML = "";
+        
+        try {
+            const response = await fetch("/saved-narratives");
+            if (!response.ok) throw new Error("Failed to load narratives");
+            const data = await response.json();
+            
+            libraryLoading.classList.add("hidden");
+            
+            if (data.total === 0) {
+                narrativeList.innerHTML = "<p>No saved narratives yet.</p>";
+                return;
+            }
+            
+            narrativeList.innerHTML = "";
+            data.narratives.forEach(narrative => {
+                const card = document.createElement("div");
+                card.className = "narrative-item";
+                card.innerHTML = `
+                    <div class="narrative-header">
+                        <h4>${narrative.title}</h4>
+                        <span class="sentiment-badge ${narrative.sentiment}">${narrative.sentiment.toUpperCase()}</span>
+                    </div>
+                    <p><strong>Words:</strong> ${narrative.word_count}</p>
+                    <p><strong>Date:</strong> ${new Date(narrative.created_at).toLocaleDateString()}</p>
+                    <div class="narrative-actions">
+                        <button class="btn-view" onclick="viewNarrative(${narrative.id})">View</button>
+                        <button class="btn-delete" onclick="deleteNarrative(${narrative.id})">Delete</button>
+                    </div>
+                `;
+                narrativeList.appendChild(card);
+            });
+        } catch (err) {
+            libraryLoading.classList.add("hidden");
+            narrativeList.innerHTML = "<p>Error loading narratives. Please try again.</p>";
+            console.error(err);
+        }
+    }
+
+    // View narrative details
+    async function viewNarrative(narrativeId) {
+        try {
+            const response = await fetch(`/saved-narratives/${narrativeId}`);
+            const narrative = await response.json();
+            
+            alert(`Title: ${narrative.title}\n\nSentiment: ${narrative.sentiment}\n\nWord Count: ${narrative.word_count}\n\nNarrative:\n${narrative.narrative}`);
+        } catch (err) {
+            alert("Error loading narrative details");
+            console.error(err);
+        }
+    }
+
+    // Delete narrative
+    async function deleteNarrative(narrativeId) {
+        if (confirm("Are you sure you want to delete this narrative?")) {
+            try {
+                const response = await fetch(`/saved-narratives/${narrativeId}`, {
+                    method: "DELETE"
+                });
+                const result = await response.json();
+                
+                alert(result.message);
+                loadSavedNarratives();
+            } catch (err) {
+                alert("Error deleting narrative");
+                console.error(err);
+            }
+        }
+    }
+
+    // Load statistics
+    async function loadStatistics() {
+        const statsLoading = document.getElementById("statsLoading");
+        const statsError = document.getElementById("statsError");
+        const sentimentStatsEl = document.getElementById("sentimentStats");
+        
+        statsLoading.classList.remove("hidden");
+        statsError.classList.add("hidden");
+        sentimentStatsEl.innerHTML = "";
+        
+        try {
+            const response = await fetch("/statistics/sentiment");
+            if (!response.ok) throw new Error("Failed to load statistics");
+            const data = await response.json();
+            
+            statsLoading.classList.add("hidden");
+            sentimentStatsEl.innerHTML = `
+                <p>Positive: <strong>${data.positive || 0}</strong></p>
+                <p>Neutral: <strong>${data.neutral || 0}</strong></p>
+                <p>Negative: <strong>${data.negative || 0}</strong></p>
+            `;
+            
+            document.getElementById("totalCount").textContent = data.total || 0;
+        } catch (err) {
+            statsLoading.classList.add("hidden");
+            statsError.textContent = "Error loading statistics. Please try again.";
+            statsError.classList.remove("hidden");
+            console.error("Error loading statistics:", err);
+        }
+    }
+
+    // Search narratives
+    document.getElementById("searchBtn").addEventListener("click", async () => {
+        const query = document.getElementById("searchInput").value;
+        if (!query) {
+            loadSavedNarratives();
+            return;
+        }
+        
+        const libraryLoading = document.getElementById("libraryLoading");
+        const narrativeList = document.getElementById("narrativeList");
+        
+        libraryLoading.classList.remove("hidden");
+        narrativeList.innerHTML = "";
+        
+        try {
+            const response = await fetch(`/saved-narratives/search/${query}`);
+            if (!response.ok) throw new Error("Search failed");
+            const data = await response.json();
+            
+            libraryLoading.classList.add("hidden");
+            
+            if (data.total === 0) {
+                narrativeList.innerHTML = "<p>No results found.</p>";
+                return;
+            }
+            
+            data.narratives.forEach(narrative => {
+                const card = document.createElement("div");
+                card.className = "narrative-item";
+                card.innerHTML = `
+                    <div class="narrative-header">
+                        <h4>${narrative.title}</h4>
+                        <span class="sentiment-badge ${narrative.sentiment}">${narrative.sentiment.toUpperCase()}</span>
+                    </div>
+                    <p><strong>Words:</strong> ${narrative.word_count}</p>
+                    <p><strong>Date:</strong> ${new Date(narrative.created_at).toLocaleDateString()}</p>
+                    <div class="narrative-actions">
+                        <button class="btn-view" onclick="viewNarrative(${narrative.id})">View</button>
+                        <button class="btn-delete" onclick="deleteNarrative(${narrative.id})">Delete</button>
+                    </div>
+                `;
+                narrativeList.appendChild(card);
+            });
+        } catch (err) {
+            libraryLoading.classList.add("hidden");
+            narrativeList.innerHTML = "<p>Error searching narratives. Please try again.</p>";
+            console.error(err);
+        }
+    });
+
+    // Filter by sentiment
+    document.getElementById("sentimentFilter").addEventListener("change", async (e) => {
+        const sentiment = e.target.value;
+        if (!sentiment) {
+            loadSavedNarratives();
+            return;
+        }
+        
+        const libraryLoading = document.getElementById("libraryLoading");
+        const narrativeList = document.getElementById("narrativeList");
+        
+        libraryLoading.classList.remove("hidden");
+        narrativeList.innerHTML = "";
+        
+        try {
+            const response = await fetch(`/saved-narratives-by-sentiment/${sentiment}`);
+            if (!response.ok) throw new Error("Filter failed");
+            const data = await response.json();
+            
+            libraryLoading.classList.add("hidden");
+            
+            if (data.total === 0) {
+                narrativeList.innerHTML = `<p>No ${sentiment} narratives found.</p>`;
+                return;
+            }
+            
+            data.narratives.forEach(narrative => {
+                const card = document.createElement("div");
+                card.className = "narrative-item";
+                card.innerHTML = `
+                    <div class="narrative-header">
+                        <h4>${narrative.title}</h4>
+                        <span class="sentiment-badge ${narrative.sentiment}">${narrative.sentiment.toUpperCase()}</span>
+                    </div>
+                    <p><strong>Words:</strong> ${narrative.word_count}</p>
+                    <p><strong>Date:</strong> ${new Date(narrative.created_at).toLocaleDateString()}</p>
+                    <div class="narrative-actions">
+                        <button class="btn-view" onclick="viewNarrative(${narrative.id})">View</button>
+                        <button class="btn-delete" onclick="deleteNarrative(${narrative.id})">Delete</button>
+                    </div>
+                `;
+                narrativeList.appendChild(card);
+            });
+        } catch (err) {
+            libraryLoading.classList.add("hidden");
+            narrativeList.innerHTML = "<p>Error filtering narratives. Please try again.</p>";
+            console.error(err);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>AI Narrative Nexus</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+<div class="page">
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>AI Narrative Nexus</h1>
+            <p>Turn raw text into a story-like narrative with topics, sentiment, and a concise summary.</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="input-panel">
+            <h2>Craft Your Narrative</h2>
+            <label for="title">Narrative Title</label>
+            <input id="title" type="text" placeholder="e.g., Exploring Healthcare with AI" />
+
+            <label for="content">Paste Your Text</label>
+            <textarea id="content" rows="10"
+                      placeholder="Paste an article, document, or any text you want to analyze..."></textarea>
+
+            <button id="analyzeBtn">Generate Narrative</button>
+            <p class="hint">Your text is processed securely on this FastAPI backend demo.</p>
+        </section>
+
+        <section class="output-panel">
+            <h2>AI-Generated Narrative</h2>
+            <div id="loading" class="loading hidden">Analyzing your narrative...</div>
+            <div id="error" class="error hidden"></div>
+
+            <div id="results" class="results hidden">
+                <div class="stats-card">
+                    <h3>Quick Stats</h3>
+                    <ul>
+                        <li><strong>Title:</strong> <span id="resTitle"></span></li>
+                        <li><strong>Words:</strong> <span id="resWords"></span></li>
+                        <li><strong>Characters:</strong> <span id="resChars"></span></li>
+                        <li><strong>Estimated Read Time:</strong>
+                            <span id="resReadTime"></span> min</li>
+                        <li><strong>Sentiment:</strong> <span id="resSentiment"></span></li>
+                    </ul>
+                </div>
+
+                <div class="topics-card">
+                    <h3>Key Themes</h3>
+                    <div id="resTopics" class="chip-container"></div>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Storyline Summary</h3>
+                    <p id="resSummary"></p>
+                </div>
+
+                <div class="narrative-card">
+                    <h3>Narrative View</h3>
+                    <p id="resNarrative"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>AI Narrative Nexus • FastAPI-powered narrative website demo</p>
+    </footer>
+</div>
+
+<script>
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const loadingEl = document.getElementById("loading");
+    const errorEl = document.getElementById("error");
+    const resultsEl = document.getElementById("results");
+
+    const resTitle = document.getElementById("resTitle");
+    const resWords = document.getElementById("resWords");
+    const resChars = document.getElementById("resChars");
+    const resReadTime = document.getElementById("resReadTime");
+    const resSentiment = document.getElementById("resSentiment");
+    const resTopics = document.getElementById("resTopics");
+    const resSummary = document.getElementById("resSummary");
+    const resNarrative = document.getElementById("resNarrative");
+
+    analyzeBtn.addEventListener("click", async () => {
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+
+        errorEl.classList.add("hidden");
+        resultsEl.classList.add("hidden");
+        loadingEl.classList.remove("hidden");
+        loadingEl.textContent = "Analyzing your narrative...";
+
+        try {
+            const response = await fetch("/analyze", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content }),
+            });
+
+            const data = await response.json();
+
+            loadingEl.classList.add("hidden");
+
+            if (data.error) {
+                errorEl.textContent = data.error;
+                errorEl.classList.remove("hidden");
+                return;
+            }
+
+            // Populate UI
+            resTitle.textContent = data.title;
+            resWords.textContent = data.word_count;
+            resChars.textContent = data.char_count;
+            resReadTime.textContent = data.reading_time_minutes;
+            resSentiment.textContent = data.sentiment;
+
+            // Topics chips
+            resTopics.innerHTML = "";
+            if (data.topics && data.topics.length > 0) {
+                data.topics.forEach(topic => {
+                    const chip = document.createElement("span");
+                    chip.className = "chip";
+                    chip.textContent = topic;
+                    resTopics.appendChild(chip);
+                });
+            } else {
+                const chip = document.createElement("span");
+                chip.className = "chip";
+                chip.textContent = "No dominant themes found";
+                resTopics.appendChild(chip);
+            }
+
+            resSummary.textContent = data.summary;
+            resNarrative.textContent = data.narrative;
+
+            resultsEl.classList.remove("hidden");
+        } catch (err) {
+            loadingEl.classList.add("hidden");
+            errorEl.textContent = "Something went wrong while analyzing the text.";
+            errorEl.classList.remove("hidden");
+            console.error(err);
+        }
+    });
+</script>
+</body>
+</html>
