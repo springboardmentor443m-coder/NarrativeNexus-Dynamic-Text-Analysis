@@ -1,171 +1,133 @@
-# AI Narrative Nexus
+# NarrativeNexus: The Dynamic Text Analysis Platform
 
-A FastAPI-based web application that analyzes text using NLP techniques including sentiment analysis and topic modeling with LDA.
+## 1. Introduction
+The goal of this project is to develop a **dynamic text analysis platform** that can accept various types of text data, extract key themes and topics, and summarize them into actionable insights.  
 
-## Features
+The platform is designed to efficiently process diverse text inputs — whether they’re articles, reports, or social media content — by identifying key themes and summarizing the information into concise, easy-to-understand outputs.
 
-- **Text Preprocessing**: Cleans and tokenizes input text
-- **Sentiment Analysis**: Classifies text sentiment (positive, neutral, negative) using TF-IDF + Logistic Regression
-- **Topic Modeling**: Extracts key topics using Latent Dirichlet Allocation (LDA)
-- **Text Summarization**: Generates concise summaries of input text
-- **Statistics**: Provides word count, character count, and reading time estimates
-- **Interactive UI**: Beautiful web interface for text analysis
+Beyond summarization, the system can offer actionable insights, helping users make quick, informed decisions based on the extracted data.  
+For example, if the analysis highlights customer dissatisfaction, the platform can recommend areas for improvement or deeper investigation.
 
-## Project Structure
+With a built-in recommendation engine, we empower users to take strategic action on the insights generated, making it an invaluable tool for anyone working with large amounts of text data.
 
-```
-Backend/
-  ├── main.py                 # FastAPI application
-  ├── preprocessing.py        # Text preprocessing functions
-  ├── sentiment_analysis.py   # Sentiment classification module
-  ├── topic_modeling.py       # LDA topic modeling module
-  ├── templates/              # HTML templates
-  │   └── index.html
-  ├── static/                 # CSS and static files
-  │   └── style.css
-  ├── models/                 # Pre-trained models (optional)
-  ├── requirements.txt        # Python dependencies
-  └── test_modules.py         # Module tests
+Positioned as a comprehensive solution, this dynamic text analysis platform leverages advanced algorithms to extract key themes, provide actionable insights, and deliver engaging visualizations. It’s designed to save time, enhance decision-making, and drive real value for businesses and individuals alike.
 
-Frontend/
-  ├── index.html             # HTML (original)
-  └── styles.css             # CSS (original)
-```
+---
 
-## Installation
+## 2. Methodology
 
-1. Navigate to the Backend directory:
-   ```bash
-   cd Backend
-   ```
+### 2.1 Data Collection and Input Handling
+- **Data Sources:** Identify and integrate multiple sources of text data such as documents, articles, social media posts, and user-generated content.  
+- **Input Module:** Develop a user-friendly interface that allows users to upload or input text data in various formats (e.g., `.txt`, `.csv`, `.docx`).
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-## Running the Application
+### 2.2 Data Preprocessing
+- **Text Cleaning:** Implement preprocessing steps to clean the text data, including:
+  - Removing special characters, punctuation, and stop words.  
+  - Normalizing text through stemming or lemmatization.  
+  - Handling missing values and ensuring data consistency.  
+- **Tokenization:** Break down the text into individual tokens (words or phrases) for analysis.
 
-Start the FastAPI server:
-```bash
-python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
+---
 
-The application will be available at: `http://localhost:8000`
+### 2.3 Topic Modeling Implementation
+- **Algorithm Selection:** Choose appropriate algorithms for topic modelling such as:
+  - *Latent Dirichlet Allocation (LDA)* for identifying latent topics in the text data.  
+  - *Non-Negative Matrix Factorization (NMF)* as an alternative for topic extraction.  
+- **Model Training:** Train the selected models on the preprocessed text data to identify key themes and topics.
 
-### Command-line Options
+---
 
-- `--reload`: Auto-reload on code changes (development mode)
-- `--host`: Bind to specified host (default: 127.0.0.1)
-- `--port`: Bind to specified port (default: 8000)
+### 2.4 Sentiment Analysis
+- **Sentiment Detection:** Implement sentiment analysis algorithms to assess the emotional tone of the identified topics, categorizing sentiments as positive, negative, or neutral.  
+- **Integration:** Combine sentiment analysis results with topic modeling to provide a comprehensive view of the data.
 
-## Usage
+---
 
-1. Open your browser and navigate to `http://localhost:8000`
-2. Enter a title for your narrative (optional)
-3. Paste your text in the textarea
-4. Click "Generate Narrative"
-5. View the analysis results including:
-   - Quick statistics (word count, reading time, sentiment)
-   - Key themes (LDA topics)
-   - Summary of the text
-   - Narrative analysis
+### 2.5 Summarization Techniques
+- **Text Summarization:** Develop algorithms to summarize the identified themes and insights into concise outputs. Techniques may include:
+  - *Extractive Summarization:* Selecting key sentences or phrases from the text.  
+  - *Abstractive Summarization:* Generating new sentences that capture the essence of the text.
 
-## API Endpoints
+---
 
-### GET /
-Returns the main HTML interface.
+### 2.6 Visualization and Reporting
+- **Dashboard Development:** Create interactive dashboards that visualize the analysis results, including:
+  - Word clouds to represent key themes.  
+  - Bar charts showing sentiment distribution.  
+  - Topic distribution graphs to illustrate the prevalence of themes.  
+- **Reporting Module:** Generate comprehensive reports summarizing the findings, including actionable insights and recommendations based on the analysis.
 
-### POST /analyze
-Analyzes input text and returns analysis results.
+---
 
-**Request Body:**
-```json
-{
-  "title": "Optional Title",
-  "content": "Your text content here..."
-}
-```
+## 3. Architecture Diagram
+*(Insert diagram here)*
 
-**Response:**
-```json
-{
-  "title": "Your Title",
-  "word_count": 150,
-  "char_count": 890,
-  "reading_time_minutes": 0.75,
-  "sentiment": "positive",
-  "topics": ["theme1 / word1 / word2", "theme2 / word3 / word4"],
-  "summary": "Brief summary of the text...",
-  "narrative": "Detailed narrative analysis..."
-}
-```
+---
 
-## Modules
+## 4. Expected Deliverables
+- A fully functional dynamic text analysis platform capable of processing various text inputs.  
+- Trained topic modeling and sentiment analysis models.  
+- Interactive dashboards and visualizations of analysis results.  
+- Comprehensive documentation detailing the methodology, implementation, and findings.
 
-### preprocessing.py
-- `clean_text()`: General text cleaning and preprocessing
-- `tokenize()`: Split text into tokens
-- `remove_stopwords()`: Filter out common stopwords
-- `filter_tokens()`: Keep only meaningful words
-- `preprocess_for_lda()`: Aggressive preprocessing for LDA
-- `preprocess_for_sentiment()`: Light preprocessing for sentiment analysis
+---
 
-### sentiment_analysis.py
-- `load_model()`: Load pre-trained sentiment model
-- `predict_labels()`: Predict sentiment for texts
-- `predict_probabilities()`: Get confidence scores
-- `create_dummy_model()`: Create demo model for testing
+## 5. Project Timeline (8 Weeks)
 
-### topic_modeling.py
-- `create_lda_model()`: Train LDA model on documents
-- `get_topics()`: Extract top words per topic
-- `infer_topics_for_text()`: Get topics for a single document
-- `get_document_topics()`: Get topic distributions
-- `get_topic_similarity()`: Calculate similarity between documents
-- `create_dummy_lda_model()`: Create demo model for testing
+### **Week 1: Data Collection and Input Handling**
+- **Day 1:** Identify and integrate multiple sources of text data (e.g., documents, articles, social media).  
+- **Day 2–3:** Develop the user interface for data input, allowing users to upload text files.  
+- **Day 4–5:** Implement input validation and error handling for uploaded data.  
+- **Day 6–7:** Test the input module with sample data to ensure functionality.
 
-## Training Custom Models
+---
 
-To use custom pre-trained models instead of demo models:
+### **Week 2: Data Preprocessing**
+- **Day 8–9:** Implement text cleaning procedures (removing special characters, punctuation, stop words).  
+- **Day 10–11:** Normalize text data using stemming or lemmatization.  
+- **Day 12–14:** Tokenize the cleaned text and prepare it for analysis.
 
-1. Train your models on your dataset
-2. Save them using joblib:
-   ```python
-   import joblib
-   joblib.dump(your_model, 'Backend/models/sentiment_model.joblib')
-   joblib.dump(your_lda_model, 'Backend/models/lda_model.joblib')
-   joblib.dump(your_vectorizer, 'Backend/models/lda_vectorizer.joblib')
-   ```
-3. Restart the application - it will automatically load your models
+---
 
-## Testing
+### **Week 3: Topic Modeling Implementation**
+- **Day 15–16:** Select and implement topic modeling algorithms (e.g., LDA, NMF).  
+- **Day 17–18:** Train the models on the preprocessed text data to identify key themes.  
+- **Day 19–21:** Evaluate the models and refine parameters for optimal performance.
 
-Run the test script to verify all modules:
-```bash
-cd Backend
-python test_modules.py
-```
+---
 
-## Technologies
+### **Week 4: Sentiment Analysis**
+- **Day 22–23:** Implement sentiment analysis algorithms to assess emotional tone.  
+- **Day 24–25:** Integrate sentiment analysis results with topic modeling outputs.  
+- **Day 26–28:** Test and validate the combined analysis for accuracy and relevance.
 
-- **FastAPI**: Web framework
-- **Scikit-learn**: Machine learning (TF-IDF, Logistic Regression, LDA)
-- **Pydantic**: Data validation
-- **Jinja2**: Template rendering
-- **HTML/CSS**: Frontend
+---
 
-## Demo Notes
+### **Week 5: Insights Generation and Summarization**
+- **Day 29–30:** Develop algorithms for summarizing identified themes and insights.  
+- **Day 31–32:** Implement extractive and abstractive summarization techniques.  
+- **Day 33–35:** Generate initial summaries and insights based on the analysis.
 
-The application includes dummy models for demonstration purposes. When you start the app without pre-trained models, it uses default models trained on sample data. For production use, train custom models on your specific dataset.
+---
 
-## Future Enhancements
+### **Week 6–7: Visualization and Reporting**
+- **Day 36–37:** Create interactive dashboards for visualizing analysis results (e.g., word clouds, sentiment distribution).  
+- **Day 38–39:** Develop a reporting module to generate comprehensive reports.  
+- **Day 40–42:** Test the visualization and reporting features for usability and clarity.
 
-- Support for multiple languages
-- Advanced text summarization (abstractive)
-- Named Entity Recognition (NER)
-- Document clustering
-- Text similarity comparison
-- Export results to PDF
-- Model training interface
-- Custom vocabulary management
+---
+
+### **Week 8: Final Evaluation and Documentation**
+- **Day 50–51:** Conduct a final evaluation of the platform’s performance and features.  
+- **Day 52–53:** Compile documentation detailing the methodology, implementation, and findings.  
+- **Day 54–56:** Prepare a final presentation of the project and its outcomes for stakeholders.  
+- **Day 57–58:** Finalize and submit the project report.
+
+---
+
+## 6. Conclusion
+This roadmap outlines the steps necessary to develop a **dynamic text analysis platform** that provides valuable insights by extracting themes and summarizing text data.  
+
+By leveraging advanced algorithms and user-friendly design, this platform aims to serve a wide range of users, enhancing their ability to make informed decisions based on textual information.
