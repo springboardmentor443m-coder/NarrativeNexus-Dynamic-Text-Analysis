@@ -7,60 +7,85 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
-# Download necessary NLTK data 
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
-nltk.download('wordnet', quiet=True)
-nltk.download('omw-1.4', quiet=True)
+# -----------------------------
+# Download NLTK resources once
+# -----------------------------
+try:
+    nltk.data.find("tokenizers/punkt")
+except LookupError:
+    nltk.download("punkt", quiet=True)
 
-def clean_text(text):
+try:
+    nltk.data.find("corpora/stopwords")
+except LookupError:
+    nltk.download("stopwords", quiet=True)
+
+try:
+    nltk.data.find("corpora/wordnet")
+except LookupError:
+    nltk.download("wordnet", quiet=True)
+    nltk.download("omw-1.4", quiet=True)
+
+# Cached components (avoid re-initializing)
+STOP_WORDS = set(stopwords.words("english"))
+LEMMATIZER = WordNetLemmatizer()
+
+
+def clean_text(text: str) -> str:
     """
     Cleans and normalizes raw text input.
     Steps:
-    1. Lowercasing
-    2. Removing special characters, punctuation, numbers
-    3. Removing stopwords
-    4. Lemmatization
+    1. Lowercase
+    2. Remove URLs, mentions, hashtags
+    3. Remove punctuation + numbers
+    4. Tokenization
+    5. Stopword removal
+    6. Lemmatization
     """
-    if not isinstance(text, str):
+
+    if not isinstance(text, str) or len(text.strip()) == 0:
         return ""
 
     text = text.lower()
 
-    text = re.sub(r"http\S+|www\S+|https\S+", '', text)
-    text = re.sub(r'@\w+|#\w+', '', text)
+    # Remove URLs and social media tags
+    text = re.sub(r"http\S+|www\S+|https\S+", " ", text)
+    text = re.sub(r"@\w+|#\w+", " ", text)
 
+    # Remove punctuation
     text = re.sub(f"[{re.escape(string.punctuation)}]", " ", text)
-    text = re.sub(r"\d+", "", text)
 
+    # Remove digits
+    text = re.sub(r"\d+", " ", text)
+
+    # Tokenize
     tokens = word_tokenize(text)
 
-    stop_words = set(stopwords.words('english'))
-    tokens = [word for word in tokens if word not in stop_words and len(word) > 2]
+    # Remove stopwords + short tokens
+    tokens = [t for t in tokens if t not in STOP_WORDS and len(t) > 2]
 
-    lemmatizer = WordNetLemmatizer()
-    lemmatized = [lemmatizer.lemmatize(token) for token in tokens]
+    # Lemmatization
+    tokens = [LEMMATIZER.lemmatize(t) for t in tokens]
 
-    cleaned_text = " ".join(lemmatized)
-
-    return cleaned_text
+    return " ".join(tokens)
 
 
 def preprocess_documents(docs):
     """
     Applies clean_text() to a list of text documents.
-    Returns a list of cleaned text strings.
+    Returns cleaned documents list.
     """
-    return [clean_text(doc) for doc in docs if isinstance(doc, str) and len(doc.strip()) > 0]
 
+    if not isinstance(docs, list):
+        return []
 
-# Quick test section (optional)
-if __name__ == "__main__":
-    sample_texts = [
-        "This is an Example! It includes numbers 123 and links: https://example.com",
-        "Data preprocessing is essential for NLP tasks!!! #AI #ML"
+    return [
+        clean_text(doc)
+        for doc in docs
+        if isinstance(doc, str) and len(doc.strip()) > 0
     ]
 
-    cleaned = preprocess_documents(sample_texts)
-    for i, text in enumerate(cleaned, 1):
-        print(f"🧹 Cleaned Text {i}:\n{text}\n")
+
+# Debug test
+if __name__ == "__main__":
+    print(clean_text("Hello!!! This is a TEST with #hashtags and 123 numbers."))

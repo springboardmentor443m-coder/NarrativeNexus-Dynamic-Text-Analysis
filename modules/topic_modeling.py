@@ -1,37 +1,85 @@
 # modules/topic_modeling.py
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import LatentDirichletAllocation
+
 import re
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import LatentDirichletAllocation
 
-def perform_lda(text):
-    cleaned_text = re.sub(r'[^a-zA-Z\s]', '', text.lower())
-    
-    # Handle both short and long text cases
-    vectorizer_params = {
-        "stop_words": "english"
-    }
 
-    # Adjust df params only if multiple documents exist
-    if isinstance(text, list) and len(text) > 1:
-        vectorizer_params["max_df"] = 0.95
-        vectorizer_params["min_df"] = 2
+def chunk_text(text, chunk_words=1000, overlap=200, max_chunks=60):
+    """
+    Splits large documents into overlapping word chunks.
+    """
+    tokens = text.split()
+    chunks = []
+    i = 0
 
-    vectorizer = CountVectorizer(**vectorizer_params)
-    doc_term_matrix = vectorizer.fit_transform([cleaned_text])
+    while i < len(tokens):
+        chunk = tokens[i:i + chunk_words]
+        if not chunk:
+            break
 
-    lda = LatentDirichletAllocation(
-        n_components=3,
-        random_state=42,
-        learning_method='online'
+        chunks.append(" ".join(chunk))
+
+        i += chunk_words - overlap
+        if max_chunks and len(chunks) >= max_chunks:
+            break
+
+    return chunks
+
+
+def perform_hybrid_lda(
+        text,
+        n_topics=4,
+        top_n=6,
+        chunk_words=1000,
+        overlap=200,
+        max_chunks=60
+):
+    """
+    Performs scalable LDA topic modeling:
+    - Cleaning
+    - Chunking for large docs
+    - TF-IDF + LDA hybrid
+    Returns:
+        topics_readable, topic_keywords, doc_topic distribution
+    """
+
+    cleaned = re.sub(r"[^a-zA-Z\s]", " ", text.lower())
+    chunks = chunk_text(cleaned, chunk_words, overlap, max_chunks)
+
+    if len(chunks) == 0:
+        return [], [], []
+
+    # Vectorizer
+    vec = TfidfVectorizer(
+        stop_words="english",
+        max_features=5000,
+        min_df=1
     )
-    lda.fit(doc_term_matrix)
+    X = vec.fit_transform(chunks)
 
-    topics = lda.transform(doc_term_matrix)
+    # LDA Model
+    k = min(n_topics, len(chunks))
+    lda = LatentDirichletAllocation(
+        n_components=k,
+        random_state=42,
+        learning_method="online",
+        max_iter=12
+    )
+    lda.fit(X)
+
+    terms = np.array(vec.get_feature_names_out())
     topic_keywords = []
 
-    for idx, topic in enumerate(lda.components_):
-        top_features_indices = topic.argsort()[:-6:-1]
-        top_features = [vectorizer.get_feature_names_out()[i] for i in top_features_indices]
-        topic_keywords.append(", ".join(top_features))
+    for comp in lda.components_:
+        top_idx = comp.argsort()[-top_n:][::-1]
+        top_terms = terms[top_idx].tolist()
+        topic_keywords.append(", ".join(top_terms))
 
-    return topics, topic_keywords
+    # Document-wide topic distribution
+    doc_topic_dist = lda.transform(X).mean(axis=0).tolist()
+
+    topics_readable = [f"Topic {i + 1}" for i in range(len(topic_keywords))]
+
+    return topics_readable, topic_keywords, doc_topic_dist

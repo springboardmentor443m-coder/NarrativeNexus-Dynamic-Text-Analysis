@@ -1,55 +1,45 @@
-# Text Analysis Editor (Transformer-powered)
+# NarrativeNexus – Dynamic Text Analysis (Transformer-Powered)
 
-A modern Streamlit app for text analysis at scale: key topics, summarization, sentiment, and topic modeling using BERTopic.
+A modern, scalable **Streamlit-based NLP application** for deep text analysis using **Transformer models + Hybrid LDA**.  
+This system supports **large documents (50–200MB)** with optimized performance for:
 
-- Topic modeling: BERTopic with transformer embeddings (robust for large datasets)
-- Summary: DistilBART CNN
-- Sentiment: DistilBERT SST-2
-- Key topics/phrases: KeyBERT with MiniLM embeddings
+-  Summarization (BART CNN)
+-  Sentiment Analysis (RoBERTa – chunk-safe for long text)
+-  Topic Modeling (Hybrid LDA for large documents)
+-  Key Themes Extraction
+-  Word Cloud Visualization
+-  PDF, TXT, CSV, DOCX Upload Support
 
-This replaces classic LDA flows as seen in the 20-Newsgroup project and is better suited for larger datasets and richer semantics.
+---
 
-Reference inspiration: `20-Newsgroup-Dataset-Analysis` ([GitHub repository](https://github.com/Sameeksharajsb/20-Newsgroup-Dataset-Analysis/tree/main?tab=readme-ov-file)).
+##  Features
 
-## Quickstart (Windows)
+- **Large File Support** (50–200MB safely)
+- **Chunked NLP Processing** (prevents GPU/CPU memory crashes)
+- **Hybrid Topic Modeling** using TF-IDF + LDA
+- **High Accuracy Sentiment Analysis** with `twitter-roberta-base`
+- **Adaptive Summarization** with word-target control
+- **Modern Dark UI with Glow Cards**
+- **Theme Switching via Sidebar**
+- **Interactive Visuals using Plotly & Matplotlib**
 
-1. Create and activate a virtual environment
+---
+
+##  Models Used
+
+| Feature | Model |
+|--------|--------|
+| Sentiment | `cardiffnlp/twitter-roberta-base-sentiment-latest` |
+| Summary | `facebook/bart-large-cnn` |
+| Tokenization | NLTK Punkt |
+| Topic Modeling | Hybrid LDA (Scikit-Learn) |
+| Visualization | WordCloud, Matplotlib, Plotly |
+
+---
+
+##  Installation (Windows)
+
+### 1️ Create Virtual Environment
 ```powershell
-python -m venv .venv
-. .venv\Scripts\Activate.ps1
-```
-
-2. Install dependencies
-```powershell
-pip install -r requirements.txt
-```
-
-3. Run the app
-```powershell
-streamlit run app.py
-```
-
-4. Open the local URL shown by Streamlit.
-
-## Usage
-
-- Editor panel: paste text, click buttons for Key Topics, Summary, Sentiment.
-- Dataset panel: upload CSV, choose the text column, run BERTopic. View top topics and interactive plots.
-
-## Notes
-
-- BERTopic benefits from `umap-learn` and `hdbscan` for clustering structure; both are included.
-- First run will download transformer models; ensure internet access the first time.
-- For very large datasets, consider precomputing embeddings offline and passing them into BERTopic.
-
-## Why BERTopic instead of LDA?
-
-- Uses contextual transformer embeddings → higher-quality, coherent topics.
-- Scales to larger corpora with better semantics than bag-of-words LDA.
-- Offers insightful interactive visualizations.
-
-## License
-
-MIT
-
-
+python -m venv venv
+venv\Scripts\activate

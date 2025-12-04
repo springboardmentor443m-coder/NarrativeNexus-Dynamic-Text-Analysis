@@ -1,33 +1,23 @@
-streamlit==1.39.0
-pandas==2.2.2
-numpy==1.26.4
-scikit-learn==1.5.1
-bertopic==0.16.3
-sentence-transformers==3.0.1
-keybert==0.8.5
-transformers==4.45.2
-torch>=2.2.0
-spacy==3.7.4
-spacy-langdetect==0.1.2
-nltk==3.9.1
-plotly==5.24.1
-umap-learn==0.5.6
-hdbscan==0.8.38
-PyPDF2==3.0.1
-python-docx==1.1.0
-# Core libraries
-streamlit
-pandas
-numpy
-nltk
-scikit-learn
-textblob
-spacy
-gensim
-wordcloud
-matplotlib
-seaborn
-plotly
 
-# NLP models for spaCy
-spacy-lookups-data
+---
+
+```txt
+streamlit==1.51.0
+pandas==2.3.3
+numpy==2.3.5
+scikit-learn==1.7.2
+nltk==3.9.2
+matplotlib==3.10.7
+plotly==5.22.0
+wordcloud==1.9.4
+python-docx==1.2.0
+PyPDF2==3.0.1
+
+# Transformer Models
+torch==2.9.1+cpu
+transformers==4.57.3
+sentencepiece==0.2.1
+
+# Utility
+tqdm
+regex

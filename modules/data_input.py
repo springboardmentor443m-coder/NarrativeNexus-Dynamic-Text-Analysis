@@ -1,67 +1,82 @@
+# modules/data_input.py
+
 import streamlit as st
-import pandas as pd
 import docx
-import os
+import io
+import PyPDF2
 
-def read_text_file(file):
-    """Read a .txt file and return text"""
-    return file.read().decode("utf-8")
 
-def read_csv_file(file):
-    """Read a .csv file and return text joined from all cells"""
-    df = pd.read_csv(file)
-    text_data = " ".join(df.astype(str).fillna("").values.flatten())
-    return text_data
+MAX_READ_BYTES = 50 * 1024 * 1024   # read max 50MB text from file
 
-def read_docx_file(file):
-    """Read a .docx file and return text"""
-    doc = docx.Document(file)
-    full_text = [para.text for para in doc.paragraphs]
-    return "\n".join(full_text)
+
+def _read_txt(file):
+    """
+    Read large TXT files safely using streaming.
+    """
+    text = []
+    total = 0
+
+    for chunk in iter(lambda: file.read(1024 * 1024), b""):
+        total += len(chunk)
+        if total > MAX_READ_BYTES:
+            text.append("\n\n[Truncated due to size limit]\n")
+            break
+        try:
+            text.append(chunk.decode("utf-8", errors="ignore"))
+        except Exception:
+            text.append(chunk.decode("latin1", errors="ignore"))
+
+    return "".join(text)
+
+
+def _read_docx(file):
+    doc = docx.Document(io.BytesIO(file.read()))
+    return "\n".join(p.text for p in doc.paragraphs)
+
+
+def _read_pdf(file):
+    pdf_reader = PyPDF2.PdfReader(io.BytesIO(file.read()))
+    text = []
+    for page in pdf_reader.pages:
+        try:
+            text.append(page.extract_text() or "")
+        except Exception:
+            pass
+    return "\n".join(text)
+
 
 def handle_file_upload():
     """
-    Streamlit file uploader with validation and preview.
-    Returns uploaded text as string.
+    Unified file handler for TXT, CSV, DOCX, PDF.
+    Auto-detects size and reads efficiently.
     """
-    st.header("📂 Data Input Module")
-    st.write("Upload your text data file (.txt, .csv, or .docx).")
-
-    uploaded_file = st.file_uploader(
-        "Choose a file",
-        type=["txt", "csv", "docx"],
-        help="Supported formats: .txt, .csv, .docx"
+    uploaded = st.file_uploader(
+        "📂 Upload file (.txt, .csv, .docx, .pdf)",
+        type=["txt", "csv", "docx", "pdf"],
     )
 
-    if uploaded_file is not None:
-        file_extension = os.path.splitext(uploaded_file.name)[1].lower()
-
-        try:
-            if file_extension == ".txt":
-                text_data = read_text_file(uploaded_file)
-            elif file_extension == ".csv":
-                text_data = read_csv_file(uploaded_file)
-            elif file_extension == ".docx":
-                text_data = read_docx_file(uploaded_file)
-            else:
-                st.error("❌ Unsupported file format.")
-                return None
-
-            if not text_data.strip():
-                st.warning("⚠️ File is empty or unreadable.")
-                return None
-
-            st.success(f"✅ File '{uploaded_file.name}' uploaded successfully!")
-
-            with st.expander("📄 Preview Uploaded Content"):
-                st.text_area("File Content Preview", text_data[:2000], height=300)
-
-            return text_data
-
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            return None
-
-    else:
-        st.info("⬆️ Please upload a file to begin.")
+    if not uploaded:
         return None
+
+    file_size = uploaded.size
+
+    if file_size > 150 * 1024 * 1024:
+        st.error("❌ File too large! Max allowed is 150MB.")
+        return None
+
+    st.info(f"📄 File uploaded: **{uploaded.name}** ({file_size/1024/1024:.1f} MB)")
+
+    if uploaded.type == "text/plain":
+        return _read_txt(uploaded)
+
+    if uploaded.type in ["text/csv", "application/vnd.ms-excel"]:
+        return _read_txt(uploaded)
+
+    if uploaded.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        return _read_docx(uploaded)
+
+    if uploaded.type == "application/pdf":
+        return _read_pdf(uploaded)
+
+    st.warning("⚠ Unsupported file type.")
+    return None

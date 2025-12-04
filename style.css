@@ -1,3 +1,7 @@
+/* ===========================================================
+   GLOBAL STYLING
+   =========================================================== */
+
 html, body, [class*="stApp"] {
   background: linear-gradient(180deg, #0a192f 0%, #102a43 100%) !important;
   color: #ffffff !important;
@@ -12,116 +16,216 @@ html, body, [class*="stApp"] {
   --border: rgba(255, 255, 255, 0.1);
 }
 
-/* Hero */
+/* ===========================================================
+   FIX: BRIGHT PLACEHOLDERS (Upload text / Paste here)
+   =========================================================== */
+
+::placeholder {
+  color: #d6eaff !important;
+  opacity: 1 !important;
+}
+
+textarea::placeholder {
+  color: #d6eaff !important;
+}
+
+/* ===========================================================
+   HERO SECTION
+   =========================================================== */
+
 .hero-section {
   text-align: center;
   padding: 4rem 1rem 2rem 1rem;
-  background: transparent;
 }
+
 .hero-section h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: white;
+  color: #ffffff !important;
   text-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
 }
+
 .hero-section .highlight {
   background: linear-gradient(90deg, var(--primary), var(--accent));
-  background-clip: text;
   -webkit-background-clip: text;
-
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .hero-section p {
   color: var(--muted);
   font-size: 1.1rem;
 }
 
-/* Input Container */
+/* ===========================================================
+   INPUT CONTAINER
+   =========================================================== */
+
 .input-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   background: var(--card-bg);
   padding: 2rem;
   border-radius: 18px;
-  box-shadow: 0 0 25px rgba(0, 180, 216, 0.2);
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.25);
   border: 1px solid rgba(0, 180, 216, 0.3);
 }
 
-/* Info Boxes */
+/* ===========================================================
+   FIX: FILE UPLOADER (Browse File button)
+   =========================================================== */
+
+[data-testid="stFileUploader"] section div div button {
+  background: rgba(0, 20, 40, 0.9) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,180,216,0.6) !important;
+  border-radius: 10px !important;
+  padding: 0.4rem 1rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 12px rgba(0,180,216,0.45) !important;
+  transition: all 0.25s ease !important;
+}
+
+[data-testid="stFileUploader"] section div div button:hover {
+  background: rgba(0,180,216,0.25) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 22px rgba(0,180,216,0.65) !important;
+}
+
+/* ===========================================================
+   TEXTAREAS
+   =========================================================== */
+
+textarea {
+  background: rgba(20, 30, 50, 0.95) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0,180,216,0.4) !important;
+  border-radius: 10px !important;
+}
+
+/* ===========================================================
+   SLIDERS (Fix invisible slider labels)
+   =========================================================== */
+
+.stSlider > div > div > div {
+  background-color: var(--accent) !important;
+}
+
+.stSlider label,
+.stSlider span,
+.stSlider p {
+  color: #ffffff !important;
+}
+
+/* Slider number text */
+.css-1siy2j7,
+.css-14xtw13 {
+  color: white !important;
+}
+
+/* ===========================================================
+   SIDEBAR FIXES
+   =========================================================== */
+
+[data-testid="stSidebar"] {
+  background: rgba(10, 25, 45, 0.72) !important;
+  backdrop-filter: blur(6px);
+}
+
+[data-testid="stSidebar"] * {
+  color: #ffffff !important;
+}
+
+/* Sidebar inputs */
+[data-testid="stSidebar"] select,
+[data-testid="stSidebar"] input,
+[data-testid="stSidebar"] textarea {
+  background: rgba(255,255,255,0.12) !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  color: #ffffff !important;
+}
+
+/* FIX: Dropdown arrow + emoji visibility */
+.stSelectbox div div,
+div[data-baseweb="select"] * {
+  color: white !important;
+  background: rgba(30, 40, 60, 0.92) !important;
+}
+
+/* ===========================================================
+   BUTTONS
+   =========================================================== */
+
+.stButton > button {
+  background: linear-gradient(90deg, var(--primary), var(--accent)) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.7rem 1.5rem !important;
+  box-shadow: 0 0 15px rgba(0, 180, 216, 0.45) !important;
+  transition: all 0.25s ease !important;
+}
+
+.stButton > button:hover {
+  transform: scale(1.045);
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.75) !important;
+}
+
+/* ===========================================================
+   TABS (WHITE TEXT)
+   =========================================================== */
+
+.stTabs [role="tab"] {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.stTabs [role="tab"]:hover {
+  color: var(--accent) !important;
+}
+
+/* Selected tab underline fix */
+.stTabs [aria-selected="true"] {
+  color: var(--accent) !important;
+  border-bottom: 3px solid var(--accent) !important;
+}
+
+/* ===========================================================
+   QUICK INSIGHTS BOXES
+   =========================================================== */
+
 .info-box {
   background: var(--card-bg);
   border-radius: 18px;
   padding: 1.5rem;
   text-align: center;
-  box-shadow: 0 0 25px rgba(0, 180, 216, 0.2);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
-.info-box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 40px rgba(0, 180, 216, 0.4);
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.32);
 }
 
-/* Section Titles */
-.section-title {
-  text-align: center;
-  margin-top: 3rem;
-  font-weight: 600;
-  color: #d9e6f2;
+.glow-card {
+  background: var(--card-bg) !important;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.30);
 }
 
-/* Divider */
-.divider {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 3rem 0;
+/* ===========================================================
+   PLOTLY CHARTS ON DARK MODE
+   =========================================================== */
+
+.js-plotly-plot .plotly .main-svg {
+  background: transparent !important;
 }
 
-/* Footer */
-.footer {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.9rem;
-  padding: 2rem 1rem;
-  border-top: 1px solid var(--border);
-  margin-top: 4rem;
-}
-/* ---- Buttons Fix ---- */
-
-/* Analyze Text Button */
-.stButton > button {
-  background: linear-gradient(90deg, var(--primary), var(--accent)) !important;
-  color: #ffffff !important;
-  font-weight: 600;
-  border: none !important;
-  border-radius: 12px !important;
-  padding: 0.7rem 1.5rem !important;
-  box-shadow: 0 0 15px rgba(0, 180, 216, 0.4) !important;
-  transition: all 0.3s ease !important;
-}
-.stButton > button:hover {
-  transform: scale(1.04);
-  box-shadow: 0 0 25px rgba(0, 180, 216, 0.6) !important;
+svg text {
+  fill: #ffffff !important;
 }
 
-/* Browse Files Upload Button */
-[data-testid="stFileUploader"] section div div button {
-  background: #2b3a55 !important;       /* dark gray-blue */
-  color: #e0e0e0 !important;            /* light gray text */
-  border: 1px solid rgba(255,255,255,0.2) !important;
-  font-weight: 500;
-  border-radius: 10px !important;
-  transition: all 0.2s ease-in-out;
-}
-[data-testid="stFileUploader"] section div div button:hover {
-  background: rgba(0,180,216,0.3) !important;
-  color: #ffffff !important;
-  box-shadow: 0 0 10px rgba(0,180,216,0.4) !important;
+/* Axis labels white */
+g.xtick text,
+g.ytick text {
+  fill: white !important;
 }
 
-/* Text Area Border + Text Visibility */
-textarea {
-  background: rgba(20, 30, 50, 0.9) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(0,180,216,0.4) !important;
-  border-radius: 10px !important;
-}
