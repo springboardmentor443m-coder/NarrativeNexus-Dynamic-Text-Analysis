@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>NarrativeNexus</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+<div class="page">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div>
+            <h1 class="app-title">NarrativeNexus</h1>
+            <p class="app-subtitle">
+                AI-powered narrative intelligence — preprocessing, sentiment, topics &amp; summaries.
+            </p>
+        </div>
+        <div class="badge">Infosys Springboard AI Internship</div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <main class="layout">
+
+        <!-- LEFT: INPUT PANEL -->
+        <section class="input-panel glass-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="icon">📝</span>
+                    <span>Input Text</span>
+                </div>
+            </div>
+
+            <textarea id="inputText" class="input-textarea"
+                      placeholder="Paste or type your article, report, or long paragraph here..."></textarea>
+
+            <div class="input-actions">
+                <button class="btn-primary full" onclick="runFullAnalysis()">
+                    ⚡ Run Full Analysis
+                </button>
+                <button class="btn-ghost" onclick="clearAll()">
+                    Clear
+                </button>
+            </div>
+        </section>
+
+        <!-- RIGHT: RESULTS PANEL -->
+        <section class="results-panel">
+
+            <!-- PREPROCESSING -->
+            <div class="glass-card section-card" id="preCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">🧹</span>
+                        <span>Preprocessing</span>
+                    </div>
+                    <button class="btn-pill" onclick="runPreprocessing()">Run</button>
+                </div>
+
+                <div id="preStats" class="stats-row skeleton">
+                    Waiting for input…
+                </div>
+
+                <div id="cleanText" class="card-block skeleton small">
+                    Cleaned text will appear here.
+                </div>
+
+                <div id="tokens" class="card-block skeleton small">
+                    Tokens will appear here.
+                </div>
+            </div>
+
+            <!-- SENTIMENT -->
+            <div class="glass-card section-card" id="sentCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">💬</span>
+                        <span>Sentiment Analysis</span>
+                    </div>
+                    <button class="btn-pill" onclick="runSentiment()">Run</button>
+                </div>
+
+                <div id="sentimentOutput" class="card-block skeleton">
+                    Sentiment insights will appear here.
+                </div>
+            </div>
+
+            <!-- TOPIC MODELING -->
+            <div class="glass-card section-card" id="topicCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">🧩</span>
+                        <span>Topic Modeling</span>
+                    </div>
+                    <button class="btn-pill" onclick="runTopicModel()">Run</button>
+                </div>
+
+                <div id="topicResult" class="card-block skeleton">
+                    Topic name and keywords will appear here.
+                </div>
+            </div>
+
+            <!-- SUMMARIZATION -->
+            <div class="glass-card section-card" id="summaryCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="icon">🧠</span>
+                        <span>Summarization</span>
+                    </div>
+                    <div class="card-controls">
+                        <select id="summaryType" class="select">
+                            <option value="Extractive">Extractive</option>
+                        </select>
+                        <button class="btn-pill" onclick="runSummary()">Run</button>
+                    </div>
+                </div>
+
+                <div id="summaryOutput" class="card-block skeleton">
+                    Summary will appear here.
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
