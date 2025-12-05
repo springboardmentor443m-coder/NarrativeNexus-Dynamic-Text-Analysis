@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TextInsight Pro - Intelligent Content Analysis</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header-section">
+        <h1 class="main-title">TextInsight Pro</h1>
+        <p class="tagline">
+          Intelligent Content Analysis with Theme Extraction, Emotion Detection
+          & Content Condensation
+        </p>
+      </header>
+
+      <div class="content-wrapper">
+        <div class="input-area">
+          <div class="mode-selector">
+            <button class="mode-button active" onclick="changeMode('text')">
+              Direct Text
+            </button>
+            <button class="mode-button" onclick="changeMode('file')">
+              Document Upload
+            </button>
+          </div>
+
+          <div id="text-mode" class="mode-panel active">
+            <textarea
+              id="content-input"
+              placeholder="Paste or type your content here for comprehensive analysis..."
+            ></textarea>
+            <button class="process-button" onclick="processContent()">
+              <span>Process Content</span>
+              <div
+                class="spinner"
+                id="text-spinner"
+                style="display: none"
+              ></div>
+            </button>
+          </div>
+
+          <div id="file-mode" class="mode-panel">
+            <div class="upload-zone">
+              <input type="file" id="document-input" accept=".txt,.pdf,.docx" />
+              <label for="document-input" class="upload-label">
+                <span>Select Document or Drag & Drop Here</span>
+                <small
+                  style="
+                    display: block;
+                    margin-top: 12px;
+                    color: #888;
+                    font-size: 0.85rem;
+                  "
+                >
+                  Supported formats: TXT, PDF, DOCX
+                </small>
+              </label>
+              <button class="process-button" onclick="processDocument()">
+                <span>Process Document</span>
+                <div
+                  class="spinner"
+                  id="file-spinner"
+                  style="display: none"
+                ></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="output-area" id="output-area" style="display: none">
+          <div class="output-card">
+            <h2>🎯 Theme Extraction</h2>
+            <div id="theme-output"></div>
+          </div>
+
+          <div class="output-card">
+            <h2>💭 Emotion Detection</h2>
+            <div id="emotion-output"></div>
+          </div>
+
+          <div class="output-card">
+            <h2>📋 Content Condensation</h2>
+            <div id="condensation-output"></div>
+          </div>
+        </div>
+
+        <div class="alert-box" id="alert-box" style="display: none"></div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
